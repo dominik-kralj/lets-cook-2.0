@@ -73,6 +73,7 @@ export function Signup() {
                                         aria-invalid={fieldState.invalid}
                                         placeholder="Username"
                                         autoComplete="username"
+                                        aria-required="true"
                                     />
                                     {fieldState.invalid && (
                                         <FieldError errors={[fieldState.error]} />
@@ -93,6 +94,7 @@ export function Signup() {
                                         aria-invalid={fieldState.invalid}
                                         placeholder="Email"
                                         autoComplete="email"
+                                        aria-required="true"
                                     />
                                     {fieldState.invalid && (
                                         <FieldError errors={[fieldState.error]} />
@@ -114,6 +116,7 @@ export function Signup() {
                                         placeholder="Password"
                                         autoComplete="new-password"
                                         type="password"
+                                        aria-required="true"
                                     />
                                     {fieldState.invalid && (
                                         <FieldError errors={[fieldState.error]} />
@@ -137,6 +140,7 @@ export function Signup() {
                                         placeholder="Confirm Password"
                                         autoComplete="new-password"
                                         type="password"
+                                        aria-required="true"
                                     />
                                     {fieldState.invalid && (
                                         <FieldError errors={[fieldState.error]} />
