@@ -36,7 +36,7 @@ function DashboardLayout() {
 				</SidebarContent>
 			</Sidebar>
 			<div className="flex flex-1 flex-col">
-				<header className="sticky top-0 z-10 border-b bg-background p-4">
+				<header className="sticky top-0 z-10 flex items-center border-b bg-background p-4">
 					<SidebarTrigger />
 					<Link to="/" className="font-bold">
 						🍳 Let's Cook

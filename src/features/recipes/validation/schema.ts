@@ -9,4 +9,11 @@ export const recipeSchema = z.object({
 	image_url: string().nullable().optional(),
 })
 
+export const createRecipeSchema = z.object({
+	name: string().min(1, { message: "Name is required" }),
+	description: string().optional(),
+	image_url: string().nullable().optional(),
+})
+
 export type Recipe = z.infer<typeof recipeSchema>
+export type CreateRecipe = z.infer<typeof createRecipeSchema>

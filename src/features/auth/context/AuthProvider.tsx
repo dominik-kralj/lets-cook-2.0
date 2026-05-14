@@ -13,6 +13,8 @@ export function AuthProvider({ children }: Props) {
 	const [authUser, setAuthUser] = useState<AuthUser | null>(null)
 	const [loading, setLoading] = useState(true)
 
+	console.log("provider")
+
 	useEffect(() => {
 		const { data } = supabase.auth.onAuthStateChange((_, session) => {
 			setLoading(true)
