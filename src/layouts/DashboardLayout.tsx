@@ -1,0 +1,53 @@
+import {
+	Sidebar,
+	SidebarContent,
+	SidebarGroup,
+	SidebarGroupContent,
+	SidebarGroupLabel,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+	SidebarProvider,
+	SidebarTrigger,
+} from "@/shared/components/ui/sidebar"
+import { Link, Outlet } from "react-router"
+import { UtensilsCrossed } from "lucide-react"
+
+function DashboardLayout() {
+	return (
+		<SidebarProvider>
+			<Sidebar>
+				<SidebarContent>
+					<SidebarGroup>
+						<SidebarGroupLabel>Menu</SidebarGroupLabel>
+						<SidebarGroupContent>
+							<SidebarMenu>
+								<SidebarMenuItem>
+									<SidebarMenuButton asChild>
+										<Link to="/recipes">
+											<UtensilsCrossed />
+											<span>Recipes</span>
+										</Link>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							</SidebarMenu>
+						</SidebarGroupContent>
+					</SidebarGroup>
+				</SidebarContent>
+			</Sidebar>
+			<div className="flex flex-1 flex-col">
+				<header className="sticky top-0 z-10 border-b bg-background p-4">
+					<SidebarTrigger />
+					<Link to="/" className="font-bold">
+						🍳 Let's Cook
+					</Link>
+				</header>
+				<main className="flex-1 p-6">
+					<Outlet />
+				</main>
+			</div>
+		</SidebarProvider>
+	)
+}
+
+export default DashboardLayout

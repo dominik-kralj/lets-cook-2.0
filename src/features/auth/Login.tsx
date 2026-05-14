@@ -1,0 +1,83 @@
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+
+import { loginSchema, type Login } from "./validation/schemas"
+import { useAuth } from "./hooks/useAuth"
+
+import { Input } from "@/shared/components/ui/input"
+import { Button } from "@/shared/components/ui/button"
+import { Field, FieldError, FieldLabel } from "@/shared/components/ui/field"
+import {
+	Card,
+	CardAction,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/shared/components/ui/card"
+import { useNavigate } from "react-router"
+
+export function Login() {
+	const navigate = useNavigate()
+	const { login } = useAuth()
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isValid },
+	} = useForm({
+		resolver: zodResolver(loginSchema),
+	})
+
+	const onSubmit = (data: Login) => {
+		login(data)
+	}
+
+	return (
+		<Card className="w-full max-w-md">
+			<CardHeader>
+				<CardTitle>Login to your account</CardTitle>
+				<CardDescription>Enter your Email and Password</CardDescription>
+				<CardAction>
+					<Button variant="link" onClick={() => navigate("/signup")}>
+						Sign Up
+					</Button>
+				</CardAction>
+			</CardHeader>
+
+			<CardContent>
+				<form
+					onSubmit={handleSubmit(onSubmit)}
+					className="flex flex-col gap-4"
+				>
+					<Field data-invalid={!!errors.email}>
+						<FieldLabel>Email</FieldLabel>
+						<Input {...register("email")} placeholder="Email" />
+						{errors.email && (
+							<FieldError>{errors.email.message}</FieldError>
+						)}
+					</Field>
+
+					<Field data-invalid={!!errors.password}>
+						<FieldLabel>Password</FieldLabel>
+						<Input
+							type="password"
+							{...register("password")}
+							placeholder="Password"
+						/>
+						{errors.password && (
+							<FieldError>{errors.password.message}</FieldError>
+						)}
+					</Field>
+					<Button
+						type="submit"
+						disabled={!isValid}
+						className="w-full"
+					>
+						Login
+					</Button>
+				</form>
+			</CardContent>
+		</Card>
+	)
+}
