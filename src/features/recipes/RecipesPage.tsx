@@ -8,6 +8,8 @@ import {
 import { useGetAllRecipes } from "./hooks/useRecipes"
 import { AddRecipeModal } from "./components/AddRecipeModal"
 import { Skeleton } from "@/shared/components/ui/skeleton"
+import { EditRecipeModal } from "./components/EditRecipeModal"
+import { DeleteRecipeModal } from "./components/DeleteRecipeModa"
 
 function RecipesPage() {
 	const { data, isLoading, error } = useGetAllRecipes()
@@ -44,13 +46,22 @@ function RecipesPage() {
 			</div>
 
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-				{data.map(({ id, name, description }) => (
-					<Card key={id}>
-						<CardHeader>
-							<CardTitle>{name}</CardTitle>
+				{data.map((recipe) => (
+					<Card key={recipe.id}>
+						<CardHeader className="flex flex-row items-center justify-between">
+							<CardTitle>{recipe.name}</CardTitle>
+							<div className="flex gap-1">
+								<EditRecipeModal recipe={recipe} />
+								<DeleteRecipeModal
+									id={recipe.id}
+									name={recipe.name}
+								/>
+							</div>
 						</CardHeader>
 						<CardContent>
-							<CardDescription>{description}</CardDescription>
+							<CardDescription>
+								{recipe.description}
+							</CardDescription>
 						</CardContent>
 					</Card>
 				))}

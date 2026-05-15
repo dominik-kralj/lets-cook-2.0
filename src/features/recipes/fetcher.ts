@@ -24,3 +24,23 @@ export const createRecipe = async (data: CreateRecipe, user_id: string) => {
 
 	if (error) throw error
 }
+
+export const updateRecipe = async (id: string, data: CreateRecipe) => {
+	const { name, description, image_url } = data
+
+	const { error } = await supabase
+		.from("recipes")
+		.update({ name, description, image_url })
+		.eq("id", id)
+
+	if (error) throw error
+}
+
+export const deleteRecipe = async (recipe_id: string) => {
+	const { error } = await supabase
+		.from("recipes")
+		.delete()
+		.eq("id", recipe_id)
+
+	if (error) throw error
+}

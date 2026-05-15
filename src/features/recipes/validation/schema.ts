@@ -17,3 +17,8 @@ export const createRecipeSchema = z.object({
 
 export type Recipe = z.infer<typeof recipeSchema>
 export type CreateRecipe = z.infer<typeof createRecipeSchema>
+
+export type UpdateRecipePayload = {
+	id: string
+	data: CreateRecipe
+}

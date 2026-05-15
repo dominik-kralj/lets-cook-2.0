@@ -6,49 +6,57 @@ import {
 	DialogTrigger,
 } from "@/shared/components/ui/dialog"
 import { Button } from "@/shared/components/ui/button"
-import { Plus } from "lucide-react"
-import { createRecipeSchema, type CreateRecipe } from "../validation/schema"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Field, FieldError, FieldLabel } from "@/shared/components/ui/field"
+import { Pencil } from "lucide-react"
 import { Input } from "@/shared/components/ui/input"
 import { Textarea } from "@/shared/components/ui/textarea"
-import { useCreateRecipe } from "../hooks/useCreateRecipe"
+import { Field, FieldLabel, FieldError } from "@/shared/components/ui/field"
+import {
+	createRecipeSchema,
+	type CreateRecipe,
+	type Recipe,
+} from "../validation/schema"
+import { useEditRecipe } from "../hooks/useEditRecipe"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Spinner } from "@/shared/components/ui/spinner"
 
-export function AddRecipeModal() {
-	const { mutate, isPending } = useCreateRecipe()
+type Props = {
+	recipe: Recipe
+}
+
+export function EditRecipeModal({ recipe }: Props) {
+	const { mutate, isPending } = useEditRecipe()
 
 	const {
 		register,
 		handleSubmit,
 		formState: { errors, isValid },
-		reset,
-	} = useForm({
+	} = useForm<CreateRecipe>({
 		resolver: zodResolver(createRecipeSchema),
+		defaultValues: {
+			name: recipe.name,
+			description: recipe.description ?? "",
+			image_url: recipe.image_url ?? "",
+		},
 	})
 
-	const onSubmit = async (data: CreateRecipe) => {
-		mutate(data, {
-			onSuccess: () => reset(),
-		})
+	const onSubmit = (data: CreateRecipe) => {
+		mutate({ id: recipe.id, data })
 	}
 
 	return (
 		<Dialog>
 			<DialogTrigger
 				render={
-					<Button>
-						<Plus />
-						Add Recipe
+					<Button variant="ghost" size="icon">
+						<Pencil className="size-4" />
 					</Button>
 				}
 			/>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Add New Recipe</DialogTitle>
+					<DialogTitle>Edit Recipe</DialogTitle>
 				</DialogHeader>
-
 				<form
 					onSubmit={handleSubmit(onSubmit)}
 					className="flex flex-col gap-4"
@@ -60,33 +68,30 @@ export function AddRecipeModal() {
 							<FieldError>{errors.name.message}</FieldError>
 						)}
 					</Field>
-
 					<Field data-invalid={!!errors.description}>
-						<FieldLabel>Recipe description</FieldLabel>
+						<FieldLabel>Description</FieldLabel>
 						<Textarea
 							{...register("description")}
 							placeholder="Description"
 						/>
-						{errors.name && (
-							<FieldError>
-								{errors.description?.message}
-							</FieldError>
-						)}
 					</Field>
-
 					<Field data-invalid={!!errors.image_url}>
-						<FieldLabel>Image</FieldLabel>
-						<Input {...register("image_url")} placeholder="Image" />
-						{errors.image_url && (
-							<FieldError>{errors.image_url.message}</FieldError>
-						)}
+						<FieldLabel>Image URL</FieldLabel>
+						<Input
+							{...register("image_url")}
+							placeholder="Image URL"
+						/>
 					</Field>
 
-					<Button type="submit" disabled={!isValid || isPending}>
+					<Button
+						type="submit"
+						disabled={!isValid || isPending}
+						className="w-full"
+					>
 						{isPending ? (
 							<Spinner className="size-4" />
 						) : (
-							"Add recipe"
+							"Save changes"
 						)}
 					</Button>
 				</form>

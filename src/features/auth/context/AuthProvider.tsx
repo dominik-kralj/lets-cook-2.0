@@ -13,26 +13,24 @@ export function AuthProvider({ children }: Props) {
 	const [authUser, setAuthUser] = useState<AuthUser | null>(null)
 	const [loading, setLoading] = useState(true)
 
-	console.log("provider")
-
 	useEffect(() => {
-		const { data } = supabase.auth.onAuthStateChange((_, session) => {
-			setLoading(true)
-
-			const user = session?.user
-
-			if (!user) {
-				setAuthUser(null)
-				setLoading(false)
-				return
-			}
-
-			setAuthUser({
-				id: user.id,
-				email: user.email!,
-			})
+		supabase.auth.getSession().then(({ data: { session } }) => {
+			setAuthUser(
+				session?.user
+					? { id: session.user.id, email: session.user.email! }
+					: null,
+			)
 			setLoading(false)
 		})
+
+		const { data } = supabase.auth.onAuthStateChange((_, session) => {
+			setAuthUser(
+				session?.user
+					? { id: session.user.id, email: session.user.email! }
+					: null,
+			)
+		})
+
 		return () => data.subscription.unsubscribe()
 	}, [])
 
