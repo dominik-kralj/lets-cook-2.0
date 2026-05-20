@@ -10,6 +10,8 @@ import RootLayout from "@/layouts/RootLayout"
 import DashboardPage from "@/features/dashboard/DashboardPage"
 import DashboardLayout from "@/layouts/DashboardLayout"
 
+import RecipeDetailsPage from "@/features/recipes/RecipeDetailsPage"
+
 const router = createBrowserRouter([
 	{
 		element: <RootLayout />,
@@ -39,6 +41,10 @@ const router = createBrowserRouter([
 						element: <DashboardLayout />,
 						children: [
 							{ path: "/recipes", element: <RecipesPage /> },
+							{
+								path: "/recipes/:id",
+								element: <RecipeDetailsPage />,
+							},
 							{ path: "/dashboard", element: <DashboardPage /> },
 						],
 					},

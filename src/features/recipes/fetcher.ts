@@ -12,6 +12,26 @@ export const getRecipes = async () => {
 	return validatedData
 }
 
+export const getRecipe = async (id: string) => {
+	const { data, error } = await supabase
+		.from("recipes")
+		.select(
+			`
+		*,
+		ingredients(*),
+		steps(*)
+	`,
+		)
+		.eq("id", id)
+		.single()
+
+	if (error) throw error
+
+	const validatedData = recipeSchema.parse(data)
+
+	return validatedData
+}
+
 export const createRecipe = async (data: CreateRecipe, user_id: string) => {
 	const { name, description, image_url } = data
 

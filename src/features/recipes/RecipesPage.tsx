@@ -10,6 +10,7 @@ import { AddRecipeModal } from "./components/AddRecipeModal"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import { EditRecipeModal } from "./components/EditRecipeModal"
 import { DeleteRecipeModal } from "./components/DeleteRecipeModa"
+import { Link } from "react-router"
 
 function RecipesPage() {
 	const { data, isLoading, error } = useGetAllRecipes()
@@ -35,7 +36,9 @@ function RecipesPage() {
 				</div>
 			</div>
 		)
+
 	if (error) return <div>Something went wrong</div>
+
 	if (!data?.length) return <div>No recipes yet</div>
 
 	return (
@@ -49,7 +52,11 @@ function RecipesPage() {
 				{data.map((recipe) => (
 					<Card key={recipe.id}>
 						<CardHeader className="flex flex-row items-center justify-between">
-							<CardTitle>{recipe.name}</CardTitle>
+							<CardTitle className="hover:underline">
+								<Link to={`/recipes/${recipe.id}`}>
+									{recipe.name}
+								</Link>
+							</CardTitle>
 							<div className="flex gap-1">
 								<EditRecipeModal recipe={recipe} />
 								<DeleteRecipeModal

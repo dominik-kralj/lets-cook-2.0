@@ -30,7 +30,8 @@ export function EditRecipeModal({ recipe }: Props) {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors, isValid },
+		reset,
+		formState: { errors, isValid, isDirty },
 	} = useForm<CreateRecipe>({
 		resolver: zodResolver(createRecipeSchema),
 		defaultValues: {
@@ -41,7 +42,12 @@ export function EditRecipeModal({ recipe }: Props) {
 	})
 
 	const onSubmit = (data: CreateRecipe) => {
-		mutate({ id: recipe.id, data })
+		mutate(
+			{ id: recipe.id, data },
+			{
+				onSuccess: () => reset(data),
+			},
+		)
 	}
 
 	return (
@@ -85,7 +91,7 @@ export function EditRecipeModal({ recipe }: Props) {
 
 					<Button
 						type="submit"
-						disabled={!isValid || isPending}
+						disabled={!isValid || isPending || !isDirty}
 						className="w-full"
 					>
 						{isPending ? (
