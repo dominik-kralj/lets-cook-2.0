@@ -9,7 +9,7 @@ import { useGetAllRecipes } from "./hooks/useRecipes"
 import { AddRecipeModal } from "./components/AddRecipeModal"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import { EditRecipeModal } from "./components/EditRecipeModal"
-import { DeleteRecipeModal } from "./components/DeleteRecipeModa"
+import { DeleteRecipeModal } from "./components/DeleteRecipeModal"
 import { Link } from "react-router"
 
 function RecipesPage() {
@@ -62,6 +62,7 @@ function RecipesPage() {
 								<DeleteRecipeModal
 									id={recipe.id}
 									name={recipe.name}
+									imagePath={recipe?.image_path}
 								/>
 							</div>
 						</CardHeader>

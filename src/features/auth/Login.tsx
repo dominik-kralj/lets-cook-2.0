@@ -17,7 +17,7 @@ import {
 } from "@/shared/components/ui/card"
 import { useNavigate } from "react-router"
 
-export function Login() {
+function Login() {
 	const navigate = useNavigate()
 	const { login } = useAuth()
 
@@ -81,3 +81,5 @@ export function Login() {
 		</Card>
 	)
 }
+
+export default Login

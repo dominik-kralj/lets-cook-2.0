@@ -8,8 +8,8 @@ export const useEditRecipe = () => {
 	const queryClient = useQueryClient()
 
 	return useMutation({
-		mutationFn: ({ id, data }: UpdateRecipePayload) =>
-			updateRecipe(id, data),
+		mutationFn: ({ id, data, oldImagePath }: UpdateRecipePayload) =>
+			updateRecipe(id, data, oldImagePath),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: recipeKeys.all })
 			toast.success("Recipe updated!")

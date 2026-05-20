@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router"
 import { Button } from "@/shared/components/ui/button"
 
-export function HomePage() {
+function HomePage() {
 	const navigate = useNavigate()
 	return (
 		<div className="flex min-h-screen flex-col items-center justify-center gap-4">
@@ -18,3 +18,5 @@ export function HomePage() {
 		</div>
 	)
 }
+
+export default HomePage

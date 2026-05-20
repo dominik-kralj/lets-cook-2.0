@@ -7,7 +7,10 @@ import {
 } from "@/shared/components/ui/dialog"
 import { Button } from "@/shared/components/ui/button"
 import { Plus } from "lucide-react"
-import { createRecipeSchema, type CreateRecipe } from "../validation/schema"
+import {
+	createRecipeFormSchema,
+	type CreateRecipeForm,
+} from "../validation/schema"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Field, FieldError, FieldLabel } from "@/shared/components/ui/field"
@@ -15,9 +18,16 @@ import { Input } from "@/shared/components/ui/input"
 import { Textarea } from "@/shared/components/ui/textarea"
 import { useCreateRecipe } from "../hooks/useCreateRecipe"
 import { Spinner } from "@/shared/components/ui/spinner"
+import { useState } from "react"
+import { uploadRecipeImage } from "../fetcher"
+import { useAuth } from "@/features/auth/hooks/useAuth"
+import { toast } from "sonner"
 
 export function AddRecipeModal() {
+	const { authUser } = useAuth()
 	const { mutate, isPending } = useCreateRecipe()
+
+	const [file, setFile] = useState<File | null>(null)
 
 	const {
 		register,
@@ -25,13 +35,31 @@ export function AddRecipeModal() {
 		formState: { errors, isValid },
 		reset,
 	} = useForm({
-		resolver: zodResolver(createRecipeSchema),
+		resolver: zodResolver(createRecipeFormSchema),
 	})
 
-	const onSubmit = async (data: CreateRecipe) => {
-		mutate(data, {
-			onSuccess: () => reset(),
-		})
+	const onSubmit = async (data: CreateRecipeForm) => {
+		let image_url: string | null = null
+		let image_path: string | null = null
+
+		if (file) {
+			const maxSize = 5 * 1024 * 1024
+
+			if (file.size > maxSize) {
+				toast.error("Image must be under 5MB")
+				return
+			}
+
+			const result = await uploadRecipeImage(
+				authUser!.id,
+				file.name,
+				file,
+			)
+			image_url = result.publicUrl
+			image_path = result.imagePath
+		}
+
+		mutate({ ...data, image_url, image_path }, { onSuccess: () => reset() })
 	}
 
 	return (
@@ -74,12 +102,15 @@ export function AddRecipeModal() {
 						)}
 					</Field>
 
-					<Field data-invalid={!!errors.image_url}>
+					<Field>
 						<FieldLabel>Image</FieldLabel>
-						<Input {...register("image_url")} placeholder="Image" />
-						{errors.image_url && (
-							<FieldError>{errors.image_url.message}</FieldError>
-						)}
+						<Input
+							type="file"
+							accept="image/jpeg,image/png,image/webp"
+							onChange={(e) =>
+								setFile(e.target.files?.[0] ?? null)
+							}
+						/>
 					</Field>
 
 					<Button type="submit" disabled={!isValid || isPending}>

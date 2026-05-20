@@ -12,6 +12,8 @@ import {
 } from "@/shared/components/ui/sidebar"
 import { Link, Outlet } from "react-router"
 import { UtensilsCrossed } from "lucide-react"
+import { Spinner } from "@/shared/components/ui/spinner"
+import { Suspense } from "react"
 
 function DashboardLayout() {
 	return (
@@ -43,7 +45,9 @@ function DashboardLayout() {
 					</Link>
 				</header>
 				<main className="flex-1 p-6">
-					<Outlet />
+					<Suspense fallback={<Spinner />}>
+						<Outlet />
+					</Suspense>
 				</main>
 			</div>
 		</SidebarProvider>

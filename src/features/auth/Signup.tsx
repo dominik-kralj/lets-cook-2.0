@@ -15,7 +15,7 @@ import { useNavigate } from "react-router"
 import { useAuth } from "./hooks/useAuth"
 import { signupSchema, type Signup } from "./validation/schemas"
 
-export function Signup() {
+function Signup() {
 	const navigate = useNavigate()
 	const { signup } = useAuth()
 
@@ -106,3 +106,5 @@ export function Signup() {
 		</Card>
 	)
 }
+
+export default Signup
