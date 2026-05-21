@@ -86,11 +86,16 @@ function RecipeDetailsPage() {
 			</div>
 
 			<RecipeFormProvider onSave={handleSave}>
-				<div className="grid h-100 gap-8 md:grid-cols-2">
-					<div className="flex flex-col gap-4">
-						<h2 className="text-xl font-semibold">Ingredients</h2>
+				<div className="grid gap-6 md:grid-cols-2">
+					<div className="flex flex-col gap-4 rounded-xl border p-4">
+						<div className="flex items-center justify-between">
+							<h2 className="text-xl font-semibold">
+								Ingredients
+							</h2>
+							<AddIngredientsForm />
+						</div>
 						{!data.ingredients?.length ? (
-							<p className="text-muted-foreground">
+							<p className="text-sm text-muted-foreground">
 								No ingredients yet
 							</p>
 						) : (
@@ -109,22 +114,19 @@ function RecipeDetailsPage() {
 								))}
 							</ul>
 						)}
-						<div className="border-t pt-4">
-							<h3 className="mb-3 text-sm font-medium">
-								Add Ingredient
-							</h3>
-							<AddIngredientsForm />
-						</div>
 					</div>
 
-					<div className="flex flex-col gap-4">
-						<h2 className="text-xl font-semibold">Steps</h2>
+					<div className="flex flex-col gap-4 rounded-xl border p-4">
+						<div className="flex items-center justify-between">
+							<h2 className="text-xl font-semibold">Steps</h2>
+							<AddStepsForm />
+						</div>
 						{!data.steps?.length ? (
-							<p className="text-muted-foreground">
+							<p className="text-sm text-muted-foreground">
 								No steps yet
 							</p>
 						) : (
-							<ol className="space-y-4">
+							<ol className="space-y-3">
 								{data.steps
 									.sort((a, b) => a.order - b.order)
 									.map((step) => (
@@ -142,12 +144,6 @@ function RecipeDetailsPage() {
 									))}
 							</ol>
 						)}
-						<div className="border-t pt-4">
-							<h3 className="mb-3 text-sm font-medium">
-								Add Step
-							</h3>
-							<AddStepsForm />
-						</div>
 					</div>
 				</div>
 			</RecipeFormProvider>
