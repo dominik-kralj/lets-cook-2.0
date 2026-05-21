@@ -3,11 +3,22 @@ import { Button } from "@/shared/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import { useGetRecipe } from "./hooks/useRecipe"
 import { Skeleton } from "@/shared/components/ui/skeleton"
+import AddIngredientsForm from "./components/AddIngredientsForm"
+import AddStepsForm from "./components/AddStepsForm"
+import { RecipeFormProvider } from "./context/RecipeFormProvider"
+import { useAddIngredients } from "./hooks/useAddIngredients"
+import { useAddSteps } from "./hooks/useAddSteps"
+import type { CreateIngredientForm, CreateStepForm } from "./validation/schema"
 
 function RecipeDetailsPage() {
 	const { id } = useParams()
 	const navigate = useNavigate()
+
 	const { data, isLoading, isError, refetch } = useGetRecipe(id)
+	const { mutate: addIngredient } = useAddIngredients()
+	const { mutate: addSteps } = useAddSteps()
+
+	if (!data) return null
 
 	if (isLoading)
 		return (
@@ -30,10 +41,24 @@ function RecipeDetailsPage() {
 			</div>
 		)
 
-	if (!data) return null
+	const handleSave = (
+		ingredients: CreateIngredientForm[],
+		steps: CreateStepForm[],
+	) => {
+		if (ingredients.length > 0) {
+			addIngredient({ recipeId: data.id, ingredients })
+		}
+		if (steps.length > 0) {
+			addSteps({
+				recipeId: data.id,
+				steps,
+				currentStepsCount: data.steps?.length ?? 0,
+			})
+		}
+	}
 
 	return (
-		<div className="px-6 pb-10">
+		<div className="h-100 flex-1 px-6 pb-10">
 			<Button
 				variant="ghost"
 				onClick={() => navigate("/recipes")}
@@ -60,55 +85,72 @@ function RecipeDetailsPage() {
 				)}
 			</div>
 
-			<div className="grid gap-8 md:grid-cols-2">
-				<div>
-					<h2 className="mb-4 text-xl font-semibold">Ingredients</h2>
-					{!data.ingredients?.length ? (
-						<p className="text-muted-foreground">
-							No ingredients yet
-						</p>
-					) : (
-						<ul className="space-y-2">
-							{data.ingredients.map((ingredient) => (
-								<li
-									key={ingredient.id}
-									className="flex items-center gap-2 text-sm"
-								>
-									<span className="font-medium">
-										{ingredient.quantity} {ingredient.unit}
-									</span>
-									<span>{ingredient.name}</span>
-								</li>
-							))}
-						</ul>
-					)}
-				</div>
-
-				<div>
-					<h2 className="mb-4 text-xl font-semibold">Steps</h2>
-					{!data.steps?.length ? (
-						<p className="text-muted-foreground">No steps yet</p>
-					) : (
-						<ol className="space-y-4">
-							{data.steps
-								.sort((a, b) => a.order - b.order)
-								.map((step) => (
+			<RecipeFormProvider onSave={handleSave}>
+				<div className="grid h-100 gap-8 md:grid-cols-2">
+					<div className="flex flex-col gap-4">
+						<h2 className="text-xl font-semibold">Ingredients</h2>
+						{!data.ingredients?.length ? (
+							<p className="text-muted-foreground">
+								No ingredients yet
+							</p>
+						) : (
+							<ul className="space-y-2">
+								{data.ingredients.map((ingredient) => (
 									<li
-										key={step.id}
-										className="flex gap-3 text-sm"
+										key={ingredient.id}
+										className="flex items-center gap-2 text-sm"
 									>
-										<span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-											{step.order}
+										<span className="font-medium">
+											{ingredient.quantity}{" "}
+											{ingredient.unit}
 										</span>
-										<span className="pt-0.5">
-											{step.description}
-										</span>
+										<span>{ingredient.name}</span>
 									</li>
 								))}
-						</ol>
-					)}
+							</ul>
+						)}
+						<div className="border-t pt-4">
+							<h3 className="mb-3 text-sm font-medium">
+								Add Ingredient
+							</h3>
+							<AddIngredientsForm />
+						</div>
+					</div>
+
+					<div className="flex flex-col gap-4">
+						<h2 className="text-xl font-semibold">Steps</h2>
+						{!data.steps?.length ? (
+							<p className="text-muted-foreground">
+								No steps yet
+							</p>
+						) : (
+							<ol className="space-y-4">
+								{data.steps
+									.sort((a, b) => a.order - b.order)
+									.map((step) => (
+										<li
+											key={step.id}
+											className="flex gap-3 text-sm"
+										>
+											<span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+												{step.order}
+											</span>
+											<span className="pt-0.5">
+												{step.description}
+											</span>
+										</li>
+									))}
+							</ol>
+						)}
+						<div className="border-t pt-4">
+							<h3 className="mb-3 text-sm font-medium">
+								Add Step
+							</h3>
+							<AddStepsForm />
+						</div>
+					</div>
 				</div>
-			</div>
+			</RecipeFormProvider>
 		</div>
 	)
 }

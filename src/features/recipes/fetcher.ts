@@ -1,5 +1,10 @@
 import { supabase } from "@/services/supabase"
-import { recipeSchema, type CreateRecipeForm } from "./validation/schema"
+import {
+	recipeSchema,
+	type CreateIngredientForm,
+	type CreateRecipeForm,
+	type CreateStepForm,
+} from "./validation/schema"
 import z from "zod"
 
 export const getRecipes = async () => {
@@ -86,4 +91,34 @@ export const uploadRecipeImage = async (
 		publicUrl: data.publicUrl,
 		imagePath: `${user_id}/${filename}`,
 	}
+}
+
+export const addIngredients = async (
+	recipe_id: string,
+	ingredients: CreateIngredientForm[],
+) => {
+	const { error } = await supabase.from("ingredients").insert(
+		ingredients.map(({ name, quantity, unit }) => ({
+			name,
+			quantity,
+			unit,
+			recipe_id,
+		})),
+	)
+	if (error) throw error
+}
+
+export const addSteps = async (
+	recipe_id: string,
+	steps: CreateStepForm[],
+	currentStepsCount: number,
+) => {
+	const { error } = await supabase.from("steps").insert(
+		steps.map(({ description }, index) => ({
+			description,
+			order: currentStepsCount + index + 1,
+			recipe_id,
+		})),
+	)
+	if (error) throw error
 }

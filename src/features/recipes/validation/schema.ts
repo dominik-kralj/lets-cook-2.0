@@ -7,12 +7,20 @@ export const ingredientSchema = z.object({
 	quantity: number(),
 	unit: string(),
 })
+export const createIngredientFormSchema = z.object({
+	name: string().min(1, { message: "Name is required" }),
+	quantity: number().min(0),
+	unit: string().min(1, { message: "Unit is required" }),
+})
 
 export const stepSchema = z.object({
 	id: uuid(),
 	recipe_id: uuid(),
 	order: number(),
 	description: string().optional(),
+})
+export const createStepFormSchema = z.object({
+	description: string().min(1, { message: "Description is required" }),
 })
 
 export const recipeSchema = z.object({
@@ -35,9 +43,12 @@ export const createRecipeFormSchema = z.object({
 })
 
 export type Recipe = z.infer<typeof recipeSchema>
-export type CreateRecipeForm = z.infer<typeof createRecipeFormSchema>
 export type Ingredient = z.infer<typeof ingredientSchema>
 export type Step = z.infer<typeof stepSchema>
+
+export type CreateRecipeForm = z.infer<typeof createRecipeFormSchema>
+export type CreateIngredientForm = z.infer<typeof createIngredientFormSchema>
+export type CreateStepForm = z.infer<typeof createStepFormSchema>
 
 export type UpdateRecipePayload = {
 	id: string

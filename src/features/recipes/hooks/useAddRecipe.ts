@@ -1,16 +1,16 @@
 import { useAuth } from "@/features/auth/hooks/useAuth"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import type { CreateRecipe } from "../validation/schema"
+import type { CreateRecipeForm } from "../validation/schema"
 import { createRecipe } from "../fetcher"
 import { recipeKeys } from "../queryKeys"
 import { toast } from "sonner"
 
-export const useCreateRecipe = () => {
+export const useAddRecipe = () => {
 	const queryClient = useQueryClient()
 	const { authUser } = useAuth()
 
 	return useMutation({
-		mutationFn: (data: CreateRecipe) => {
+		mutationFn: (data: CreateRecipeForm) => {
 			if (!authUser?.id) throw new Error("Not authenticated")
 			return createRecipe(data, authUser.id)
 		},

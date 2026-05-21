@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Field, FieldError, FieldLabel } from "@/shared/components/ui/field"
 import { Input } from "@/shared/components/ui/input"
 import { Textarea } from "@/shared/components/ui/textarea"
-import { useCreateRecipe } from "../hooks/useCreateRecipe"
+import { useAddRecipe } from "../hooks/useAddRecipe"
 import { Spinner } from "@/shared/components/ui/spinner"
 import { useState } from "react"
 import { uploadRecipeImage } from "../fetcher"
@@ -25,7 +25,7 @@ import { toast } from "sonner"
 
 export function AddRecipeModal() {
 	const { authUser } = useAuth()
-	const { mutate, isPending } = useCreateRecipe()
+	const { mutate, isPending } = useAddRecipe()
 
 	const [file, setFile] = useState<File | null>(null)
 
