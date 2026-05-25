@@ -38,7 +38,7 @@ export const createRecipe = async (
 	if (error) throw error
 }
 
-export const updateRecipe = async (
+export const editRecipe = async (
 	id: string,
 	payload: CreateRecipeForm,
 	oldImagePath?: string | null,
@@ -108,6 +108,26 @@ export const addIngredients = async (
 	if (error) throw error
 }
 
+export const editIngredient = async (
+	id: string,
+	payload: CreateIngredientForm,
+) => {
+	const { name, quantity, unit } = payload
+	const { error } = await supabase
+		.from("ingredients")
+		.update({ name, quantity, unit })
+		.eq("id", id)
+	if (error) throw error
+}
+
+export const deleteIngredient = async (ingredient_id: string) => {
+	const { error } = await supabase
+		.from("ingredients")
+		.delete()
+		.eq("id", ingredient_id)
+	if (error) throw error
+}
+
 export const addSteps = async (
 	recipe_id: string,
 	steps: CreateStepForm[],
@@ -123,15 +143,16 @@ export const addSteps = async (
 	if (error) throw error
 }
 
-export const deleteIngredient = async (ingredient_id: string) => {
-	const { error } = await supabase
-		.from("ingredients")
-		.delete()
-		.eq("id", ingredient_id)
+export const deleteStep = async (step_id: string) => {
+	const { error } = await supabase.from("steps").delete().eq("id", step_id)
 	if (error) throw error
 }
 
-export const deleteStep = async (step_id: string) => {
-	const { error } = await supabase.from("steps").delete().eq("id", step_id)
+export const editStep = async (id: string, payload: CreateStepForm) => {
+	const { description } = payload
+	const { error } = await supabase
+		.from("steps")
+		.update({ description })
+		.eq("id", id)
 	if (error) throw error
 }

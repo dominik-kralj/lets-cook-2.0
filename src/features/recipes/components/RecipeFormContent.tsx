@@ -7,6 +7,8 @@ import AddStepsForm from "./AddStepsForm"
 import { useAddIngredients } from "../hooks/useAddIngredients"
 import { useAddSteps } from "../hooks/useAddSteps"
 import type { Ingredient, Step } from "../validation/schema"
+import EditIngredientModal from "./EditIngredientModal"
+import EditStepModal from "./EditStepModal"
 
 type Props = {
 	recipeId: string
@@ -78,17 +80,25 @@ export function RecipeFormContent({
 										</span>{" "}
 										{ingredient.name}
 									</span>
-									<Button
-										variant="ghost"
-										size="icon"
-										className="size-7"
-										disabled={isDeletingIngredient}
-										onClick={() =>
-											onDeleteIngredient(ingredient.id)
-										}
-									>
-										<Trash2 className="size-3 text-destructive" />
-									</Button>
+									<div className="flex gap-1">
+										<EditIngredientModal
+											ingredient={ingredient}
+											recipeId={recipeId}
+										/>
+										<Button
+											variant="ghost"
+											size="icon"
+											className="size-7"
+											disabled={isDeletingIngredient}
+											onClick={() =>
+												onDeleteIngredient(
+													ingredient.id,
+												)
+											}
+										>
+											<Trash2 className="size-3 text-destructive" />
+										</Button>
+									</div>
 								</li>
 							))}
 						</ul>
@@ -148,17 +158,23 @@ export function RecipeFormContent({
 										<span className="flex-1">
 											{step.description}
 										</span>
-										<Button
-											variant="ghost"
-											size="icon"
-											className="size-7"
-											disabled={isDeletingStep}
-											onClick={() =>
-												onDeleteStep(step.id)
-											}
-										>
-											<Trash2 className="size-3 text-destructive" />
-										</Button>
+										<div className="flex gap-1">
+											<EditStepModal
+												step={step}
+												recipeId={recipeId}
+											/>
+											<Button
+												variant="ghost"
+												size="icon"
+												className="size-7"
+												disabled={isDeletingStep}
+												onClick={() =>
+													onDeleteStep(step.id)
+												}
+											>
+												<Trash2 className="size-3 text-destructive" />
+											</Button>
+										</div>
 									</li>
 								))}
 						</ol>

@@ -9,7 +9,7 @@ import { Button } from "@/shared/components/ui/button"
 import { Pencil } from "lucide-react"
 import { Input } from "@/shared/components/ui/input"
 import { Textarea } from "@/shared/components/ui/textarea"
-import { Field, FieldLabel, FieldError } from "@/shared/components/ui/field"
+import { Field, FieldLabel } from "@/shared/components/ui/field"
 import {
 	createRecipeFormSchema,
 	type CreateRecipeForm,
@@ -98,31 +98,37 @@ export function EditRecipeModal({ recipe }: Props) {
 					className="flex flex-col gap-4"
 				>
 					<Field data-invalid={!!errors.name}>
-						<FieldLabel>Name</FieldLabel>
-						<Input {...register("name")} placeholder="Name" />
-						{errors.name && (
-							<FieldError>{errors.name.message}</FieldError>
-						)}
+						<FieldLabel htmlFor="recipe-name">Name</FieldLabel>
+						<Input
+							id="recipe-name"
+							autoComplete="off"
+							{...register("name")}
+							placeholder="Name"
+						/>
 					</Field>
+
 					<Field data-invalid={!!errors.description}>
-						<FieldLabel>Description</FieldLabel>
+						<FieldLabel htmlFor="recipe-description">
+							Description
+						</FieldLabel>
 						<Textarea
+							id="recipe-description"
+							autoComplete="off"
 							{...register("description")}
 							placeholder="Description"
 						/>
 					</Field>
 
 					<Field>
-						<FieldLabel>Image</FieldLabel>
-						<div className="flex gap-2">
-							<Input
-								type="file"
-								accept="image/jpeg,image/png,image/webp"
-								onChange={(e) =>
-									setFile(e.target.files?.[0] ?? null)
-								}
-							/>
-						</div>
+						<FieldLabel htmlFor="recipe-image">Image</FieldLabel>
+						<Input
+							id="recipe-image"
+							type="file"
+							accept="image/jpeg,image/png,image/webp"
+							onChange={(e) =>
+								setFile(e.target.files?.[0] ?? null)
+							}
+						/>
 					</Field>
 
 					{recipe.image_url && !file && (
