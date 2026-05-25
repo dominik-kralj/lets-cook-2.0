@@ -9,6 +9,7 @@ import { useAddSteps } from "../hooks/useAddSteps"
 import type { Ingredient, Step } from "../validation/schema"
 import EditIngredientModal from "./EditIngredientModal"
 import EditStepModal from "./EditStepModal"
+import { toast } from "sonner"
 
 type Props = {
 	recipeId: string
@@ -51,6 +52,7 @@ export function RecipeFormContent({
 			steps: pending_steps,
 			currentStepsCount: steps.length,
 		})
+		toast.success("Changes saved!")
 		reset()
 	}
 

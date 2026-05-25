@@ -20,7 +20,6 @@ export const useAddSteps = () => {
 			queryClient.invalidateQueries({
 				queryKey: recipeKeys.detail(recipeId),
 			})
-			toast.success("Steps saved!")
 		},
 		onError: () => toast.error("Failed to save steps"),
 	})

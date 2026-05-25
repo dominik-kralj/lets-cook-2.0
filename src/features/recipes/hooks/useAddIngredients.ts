@@ -19,7 +19,6 @@ export const useAddIngredients = () => {
 			queryClient.invalidateQueries({
 				queryKey: recipeKeys.detail(recipeId),
 			})
-			toast.success("Ingredients saved!")
 		},
 		onError: () => toast.error("Failed to save ingredients"),
 	})

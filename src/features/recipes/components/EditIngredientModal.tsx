@@ -62,7 +62,11 @@ function EditIngredientModal({ ingredient, recipeId }: Props) {
 				>
 					<Field data-invalid={!!errors.name}>
 						<FieldLabel htmlFor="edit-ing-name">Name</FieldLabel>
-						<Input id="edit-ing-name" {...register("name")} />
+						<Input
+							id="edit-ing-name"
+							autoComplete="off"
+							{...register("name")}
+						/>
 						{errors.name && (
 							<FieldError>{errors.name.message}</FieldError>
 						)}
@@ -78,6 +82,7 @@ function EditIngredientModal({ ingredient, recipeId }: Props) {
 							<Input
 								id="edit-ing-qty"
 								type="number"
+								autoComplete="off"
 								{...register("quantity", {
 									valueAsNumber: true,
 								})}
@@ -87,7 +92,11 @@ function EditIngredientModal({ ingredient, recipeId }: Props) {
 							<FieldLabel htmlFor="edit-ing-unit">
 								Unit
 							</FieldLabel>
-							<Input id="edit-ing-unit" {...register("unit")} />
+							<Input
+								id="edit-ing-unit"
+								autoComplete="off"
+								{...register("unit")}
+							/>
 						</Field>
 					</div>
 					<Button

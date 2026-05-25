@@ -9,7 +9,7 @@ import { Button } from "@/shared/components/ui/button"
 import { Pencil } from "lucide-react"
 import { Input } from "@/shared/components/ui/input"
 import { Textarea } from "@/shared/components/ui/textarea"
-import { Field, FieldLabel } from "@/shared/components/ui/field"
+import { Field, FieldError, FieldLabel } from "@/shared/components/ui/field"
 import {
 	createRecipeFormSchema,
 	type CreateRecipeForm,
@@ -105,6 +105,9 @@ export function EditRecipeModal({ recipe }: Props) {
 							{...register("name")}
 							placeholder="Name"
 						/>
+						{errors.name && (
+							<FieldError>{errors.name.message}</FieldError>
+						)}
 					</Field>
 
 					<Field data-invalid={!!errors.description}>
@@ -117,6 +120,11 @@ export function EditRecipeModal({ recipe }: Props) {
 							{...register("description")}
 							placeholder="Description"
 						/>
+						{errors.description && (
+							<FieldError>
+								{errors.description.message}
+							</FieldError>
+						)}
 					</Field>
 
 					<Field>

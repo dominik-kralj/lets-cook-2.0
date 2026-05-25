@@ -43,15 +43,16 @@ function Signup() {
 					</Button>
 				</CardAction>
 			</CardHeader>
-
 			<CardContent>
 				<form
 					onSubmit={handleSubmit(onSubmit)}
 					className="flex flex-col gap-4"
 				>
 					<Field data-invalid={!!errors.username}>
-						<FieldLabel>Username</FieldLabel>
+						<FieldLabel htmlFor="username">Username</FieldLabel>
 						<Input
+							id="username"
+							autoComplete="username"
 							{...register("username")}
 							placeholder="Username"
 						/>
@@ -59,19 +60,26 @@ function Signup() {
 							<FieldError>{errors.username.message}</FieldError>
 						)}
 					</Field>
-
 					<Field data-invalid={!!errors.email}>
-						<FieldLabel>Email</FieldLabel>
-						<Input {...register("email")} placeholder="Email" />
+						<FieldLabel htmlFor="signup-email">Email</FieldLabel>
+						<Input
+							id="signup-email"
+							autoComplete="email"
+							{...register("email")}
+							placeholder="Email"
+						/>
 						{errors.email && (
 							<FieldError>{errors.email.message}</FieldError>
 						)}
 					</Field>
-
 					<Field data-invalid={!!errors.password}>
-						<FieldLabel>Password</FieldLabel>
+						<FieldLabel htmlFor="signup-password">
+							Password
+						</FieldLabel>
 						<Input
+							id="signup-password"
 							type="password"
+							autoComplete="new-password"
 							{...register("password")}
 							placeholder="Password"
 						/>
@@ -79,11 +87,14 @@ function Signup() {
 							<FieldError>{errors.password.message}</FieldError>
 						)}
 					</Field>
-
 					<Field data-invalid={!!errors.confirmPassword}>
-						<FieldLabel>Confirm Password</FieldLabel>
+						<FieldLabel htmlFor="confirmPassword">
+							Confirm Password
+						</FieldLabel>
 						<Input
+							id="confirmPassword"
 							type="password"
+							autoComplete="new-password"
 							{...register("confirmPassword")}
 							placeholder="Confirm Password"
 						/>
@@ -93,7 +104,6 @@ function Signup() {
 							</FieldError>
 						)}
 					</Field>
-
 					<Button
 						type="submit"
 						disabled={!isValid}

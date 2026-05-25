@@ -58,8 +58,10 @@ function EditStepModal({ step, recipeId }: { step: Step; recipeId: string }) {
 						</FieldLabel>
 						<Input
 							id="edit-step-desc"
+							autoComplete="off"
 							{...register("description")}
 						/>
+
 						{errors.description && (
 							<FieldError>
 								{errors.description.message}

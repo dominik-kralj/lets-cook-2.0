@@ -44,24 +44,29 @@ function Login() {
 					</Button>
 				</CardAction>
 			</CardHeader>
-
 			<CardContent>
 				<form
 					onSubmit={handleSubmit(onSubmit)}
 					className="flex flex-col gap-4"
 				>
 					<Field data-invalid={!!errors.email}>
-						<FieldLabel>Email</FieldLabel>
-						<Input {...register("email")} placeholder="Email" />
+						<FieldLabel htmlFor="email">Email</FieldLabel>
+						<Input
+							id="email"
+							autoComplete="email"
+							{...register("email")}
+							placeholder="Email"
+						/>
 						{errors.email && (
 							<FieldError>{errors.email.message}</FieldError>
 						)}
 					</Field>
-
 					<Field data-invalid={!!errors.password}>
-						<FieldLabel>Password</FieldLabel>
+						<FieldLabel htmlFor="password">Password</FieldLabel>
 						<Input
+							id="password"
 							type="password"
+							autoComplete="current-password"
 							{...register("password")}
 							placeholder="Password"
 						/>
