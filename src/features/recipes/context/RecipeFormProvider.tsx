@@ -1,17 +1,12 @@
 import { useState, type ReactNode } from "react"
 import { RecipeFormContext } from "./RecipeFormContext"
 import type { CreateIngredientForm, CreateStepForm } from "../validation/schema"
-import { Button } from "@/shared/components/ui/button"
 
 type Props = {
 	children: ReactNode
-	onSave: (
-		ingredients: CreateIngredientForm[],
-		steps: CreateStepForm[],
-	) => void
 }
 
-export function RecipeFormProvider({ children, onSave }: Props) {
+export function RecipeFormProvider({ children }: Props) {
 	const [ingredients, setIngredients] = useState<CreateIngredientForm[]>([])
 	const [steps, setSteps] = useState<CreateStepForm[]>([])
 
@@ -27,7 +22,10 @@ export function RecipeFormProvider({ children, onSave }: Props) {
 	const removeStep = (index: number) =>
 		setSteps((prev) => prev.filter((_, i) => i !== index))
 
-	const hasChanges = ingredients.length > 0 || steps.length > 0
+	const reset = () => {
+		setIngredients([])
+		setSteps([])
+	}
 
 	return (
 		<RecipeFormContext
@@ -38,19 +36,10 @@ export function RecipeFormProvider({ children, onSave }: Props) {
 				addStep,
 				removeIngredient,
 				removeStep,
+				reset,
 			}}
 		>
 			{children}
-			{hasChanges && (
-				<div className="mt-6 border-t pt-4">
-					<Button
-						className="w-full"
-						onClick={() => onSave(ingredients, steps)}
-					>
-						Save Changes
-					</Button>
-				</div>
-			)}
 		</RecipeFormContext>
 	)
 }

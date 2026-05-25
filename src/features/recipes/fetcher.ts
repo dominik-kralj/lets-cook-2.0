@@ -122,3 +122,16 @@ export const addSteps = async (
 	)
 	if (error) throw error
 }
+
+export const deleteIngredient = async (ingredient_id: string) => {
+	const { error } = await supabase
+		.from("ingredients")
+		.delete()
+		.eq("id", ingredient_id)
+	if (error) throw error
+}
+
+export const deleteStep = async (step_id: string) => {
+	const { error } = await supabase.from("steps").delete().eq("id", step_id)
+	if (error) throw error
+}

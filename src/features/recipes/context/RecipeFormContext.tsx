@@ -8,6 +8,7 @@ export type RecipeFormContext = {
 	addStep: (step: CreateStepForm) => void
 	removeIngredient: (index: number) => void
 	removeStep: (index: number) => void
+	reset: () => void
 }
 
 export const RecipeFormContext = createContext<RecipeFormContext | null>(null)
