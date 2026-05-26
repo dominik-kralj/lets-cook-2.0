@@ -1,16 +1,8 @@
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/shared/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/shared/components/ui/card"
 import { useGetAllRecipes } from "./hooks/useRecipes"
 import { AddRecipeModal } from "./components/AddRecipeModal"
 import { Skeleton } from "@/shared/components/ui/skeleton"
-import { EditRecipeModal } from "./components/EditRecipeModal"
-import { DeleteRecipeModal } from "./components/DeleteRecipeModal"
-import { Link } from "react-router"
+import RecipeCard from "./components/RecipeCard"
 
 function RecipesPage() {
 	const { data, isLoading, error } = useGetAllRecipes()
@@ -38,7 +30,6 @@ function RecipesPage() {
 		)
 
 	if (error) return <div>Something went wrong</div>
-
 	if (!data?.length) return <div>No recipes yet</div>
 
 	return (
@@ -47,31 +38,9 @@ function RecipesPage() {
 				<h1 className="text-2xl font-bold">My Recipes</h1>
 				<AddRecipeModal />
 			</div>
-
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 				{data.map((recipe) => (
-					<Card key={recipe.id}>
-						<CardHeader className="flex flex-row items-center justify-between">
-							<CardTitle className="hover:underline">
-								<Link to={`/recipes/${recipe.id}`}>
-									{recipe.name}
-								</Link>
-							</CardTitle>
-							<div className="flex gap-1">
-								<EditRecipeModal recipe={recipe} />
-								<DeleteRecipeModal
-									id={recipe.id}
-									name={recipe.name}
-									imagePath={recipe?.image_path}
-								/>
-							</div>
-						</CardHeader>
-						<CardContent>
-							<CardDescription>
-								{recipe.description}
-							</CardDescription>
-						</CardContent>
-					</Card>
+					<RecipeCard key={recipe.id} recipe={recipe} />
 				))}
 			</div>
 		</div>
