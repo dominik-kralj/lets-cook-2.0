@@ -11,7 +11,7 @@ import {
 	SidebarTrigger,
 } from "@/shared/components/ui/sidebar"
 import { Link, Outlet } from "react-router"
-import { UtensilsCrossed, HeartIcon } from "lucide-react"
+import { UtensilsCrossed, HeartIcon, Library } from "lucide-react"
 import { Spinner } from "@/shared/components/ui/spinner"
 import { Suspense } from "react"
 
@@ -37,6 +37,14 @@ function DashboardLayout() {
 										<Link to="/favorites">
 											<HeartIcon />
 											<span>Favorites</span>
+										</Link>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+								<SidebarMenuItem>
+									<SidebarMenuButton asChild>
+										<Link to="/collections">
+											<Library />
+											<span>Collections</span>
 										</Link>
 									</SidebarMenuButton>
 								</SidebarMenuItem>

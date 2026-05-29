@@ -6,6 +6,12 @@ import AuthRoute from "@/features/auth/AuthRoute"
 import RootLayout from "@/layouts/RootLayout"
 import DashboardLayout from "@/layouts/DashboardLayout"
 
+const CollectionPage = lazy(
+	() => import("@/features/collections/CollectionsPage"),
+)
+const CollectionDetailsPage = lazy(
+	() => import("@/features/collections/CollectionDetailsPage"),
+)
 const FavoritesPage = lazy(() => import("@/features/favorites/FavoritesPage"))
 const RecipesPage = lazy(() => import("@/features/recipes/RecipesPage"))
 const RecipeDetailsPage = lazy(
@@ -42,6 +48,14 @@ const router = createBrowserRouter([
 							},
 							{ path: "/dashboard", element: <DashboardPage /> },
 							{ path: "/favorites", element: <FavoritesPage /> },
+							{
+								path: "/collections",
+								element: <CollectionPage />,
+							},
+							{
+								path: "/collections/:id",
+								element: <CollectionDetailsPage />,
+							},
 						],
 					},
 				],
