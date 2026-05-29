@@ -9,6 +9,8 @@ import { RecipeFormProvider } from "./context/RecipeFormProvider"
 import { useDeleteStep } from "./hooks/useDeleteStep"
 import { useDeleteIngredient } from "./hooks/useDeleteIngredient"
 import { RecipeFormContent } from "./components/RecipeFormContent"
+import { AddToCollectionButton } from "./components/AddToCollectionsButton"
+import { EditRecipeModal } from "./components/EditRecipeModal"
 
 function RecipeDetailsPage() {
 	const { id } = useParams()
@@ -62,13 +64,19 @@ function RecipeDetailsPage() {
 				/>
 			)}
 
-			<div className="mb-8">
-				<h1 className="text-3xl font-bold">{data.name}</h1>
-				{data.description && (
-					<p className="mt-2 text-muted-foreground">
-						{data.description}
-					</p>
-				)}
+			<div className="mb-8 flex items-start justify-between gap-4">
+				<div>
+					<h1 className="text-3xl font-bold">{data.name}</h1>
+					{data.description && (
+						<p className="mt-2 text-muted-foreground">
+							{data.description}
+						</p>
+					)}
+				</div>
+				<div className="flex shrink-0 gap-2">
+					<AddToCollectionButton recipeId={data.id} />
+					<EditRecipeModal recipe={data} />
+				</div>
 			</div>
 
 			<RecipeFormProvider>
