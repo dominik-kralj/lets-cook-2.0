@@ -22,7 +22,7 @@ function HomePage() {
 			</nav>
 
 			<section className="mx-auto max-w-5xl px-8 pt-20 pb-24">
-				<div className="grid gap-16 md:grid-cols-2 md:items-center">
+				<div className="grid gap-8 md:grid-cols-2 md:items-center md:gap-16">
 					<div>
 						<p className="mb-4 text-sm font-medium tracking-widest text-primary uppercase">
 							Your kitchen companion
@@ -44,41 +44,31 @@ function HomePage() {
 						</Button>
 					</div>
 
-					<div className="hidden md:block">
-						<div className="overflow-hidden rounded-2xl">
-							<img
-								src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&auto=format&fit=crop&q=80"
-								srcSet="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&auto=format&fit=crop&q=80 400w, https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&auto=format&fit=crop&q=80 800w, https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&auto=format&fit=crop&q=80 1200w"
-								sizes="(max-width: 768px) 0px, 50vw"
-								alt="A beautiful spread of home cooked food"
-								width={800}
-								height={600}
-								loading="eager"
-								decoding="async"
-								className="h-full w-full object-cover"
-							/>
-						</div>
-						<p className="mt-2 text-right text-xs text-muted-foreground">
-							Photo by{" "}
-							<a
-								href="https://unsplash.com/@brookelark"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="underline"
-							>
-								Brooke Lark
-							</a>{" "}
-							on Unsplash
-						</p>
+					<div className="overflow-hidden rounded-2xl">
+						<img
+							src="/images/hero-800.webp"
+							srcSet="
+                                /images/hero-400.webp 400w,
+                                /images/hero-800.webp 800w,
+                                /images/hero-1200.webp 1200w
+                            "
+							sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
+							alt="A beautiful spread of home cooked food"
+							width={800}
+							height={600}
+							loading="eager"
+							decoding="async"
+							className="h-64 w-full object-cover md:h-full"
+						/>
 					</div>
 				</div>
 			</section>
 
 			<section className="border-t border-border bg-card px-8 py-24">
 				<div className="mx-auto max-w-5xl">
-					<p className="mb-12 text-center text-sm font-medium tracking-widest text-muted-foreground uppercase">
+					<h2 className="mb-12 text-center text-sm font-medium tracking-widest text-muted-foreground uppercase">
 						Everything you need
-					</p>
+					</h2>
 					<div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
 						{[
 							{
