@@ -8,7 +8,7 @@ import {
 } from "@/shared/components/ui/dialog"
 import { Button } from "@/shared/components/ui/button"
 import { Trash2 } from "lucide-react"
-import { useDeleteRecipe } from "../hooks/useDeleteRecipe"
+import { useRecipes } from "../hooks/useRecipes"
 import { Spinner } from "@/shared/components/ui/spinner"
 
 type Props = {
@@ -18,10 +18,10 @@ type Props = {
 }
 
 export function DeleteRecipeModal({ id, name, imagePath }: Props) {
-	const { mutate, isPending } = useDeleteRecipe()
+	const { deleteRecipe, isDeleting } = useRecipes()
 
 	const handleDeleteRecipe = (id: string, image_path?: string) =>
-		mutate({ id, image_path })
+		deleteRecipe({ id, image_path })
 
 	return (
 		<Dialog>
@@ -42,12 +42,12 @@ export function DeleteRecipeModal({ id, name, imagePath }: Props) {
 				<DialogFooter>
 					<Button
 						variant="destructive"
-						disabled={isPending}
+						disabled={isDeleting}
 						onClick={() =>
 							handleDeleteRecipe(id, imagePath ?? undefined)
 						}
 					>
-						{isPending ? <Spinner className="size-4" /> : "Delete"}
+						{isDeleting ? <Spinner className="size-4" /> : "Delete"}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

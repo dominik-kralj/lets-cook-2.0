@@ -19,11 +19,11 @@ import { Pencil } from "lucide-react"
 import { Spinner } from "@/shared/components/ui/spinner"
 import { Field, FieldError, FieldLabel } from "@/shared/components/ui/field"
 import { Input } from "@/shared/components/ui/input"
-import { useEditStep } from "../hooks/useEditStep"
+import { useRecipes } from "../hooks/useRecipes"
 
 function EditStepModal({ step, recipeId }: { step: Step; recipeId: string }) {
 	const [open, setOpen] = useState(false)
-	const { mutate, isPending } = useEditStep(recipeId)
+	const { editStep, isEditingStep } = useRecipes(recipeId)
 	const {
 		register,
 		handleSubmit,
@@ -33,7 +33,7 @@ function EditStepModal({ step, recipeId }: { step: Step; recipeId: string }) {
 		defaultValues: { description: step.description ?? "" },
 	})
 	const onSubmit = (data: CreateStepForm) => {
-		mutate({ id: step.id, data }, { onSuccess: () => setOpen(false) })
+		editStep({ id: step.id, data }, { onSuccess: () => setOpen(false) })
 	}
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -70,9 +70,9 @@ function EditStepModal({ step, recipeId }: { step: Step; recipeId: string }) {
 					</Field>
 					<Button
 						type="submit"
-						disabled={!isValid || !isDirty || isPending}
+						disabled={!isValid || !isDirty || isEditingStep}
 					>
-						{isPending ? <Spinner className="size-4" /> : "Save"}
+						{isEditingStep ? <Spinner className="size-4" /> : "Save"}
 					</Button>
 				</form>
 			</DialogContent>

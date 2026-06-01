@@ -1,13 +1,11 @@
 import { useParams, useNavigate } from "react-router"
 import { Button } from "@/shared/components/ui/button"
 import { ArrowLeft } from "lucide-react"
-import { useGetRecipe } from "./hooks/useRecipe"
+import { useGetRecipe, useRecipes } from "./hooks/useRecipes"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 
 import { RecipeFormProvider } from "./context/RecipeFormProvider"
 
-import { useDeleteStep } from "./hooks/useDeleteStep"
-import { useDeleteIngredient } from "./hooks/useDeleteIngredient"
 import { RecipeFormContent } from "./components/RecipeFormContent"
 import { AddToCollectionButton } from "./components/AddToCollectionsButton"
 import { EditRecipeModal } from "./components/EditRecipeModal"
@@ -18,9 +16,8 @@ function RecipeDetailsPage() {
 
 	const { data, isLoading, isError, refetch } = useGetRecipe(id)
 
-	const { mutate: deleteIngredient, isPending: isDeletingIngredient } =
-		useDeleteIngredient(id)
-	const { mutate: deleteStep, isPending: isDeletingStep } = useDeleteStep(id)
+	const { deleteIngredient, isDeletingIngredient, deleteStep, isDeletingStep } =
+		useRecipes(id)
 
 	if (!data) return null
 

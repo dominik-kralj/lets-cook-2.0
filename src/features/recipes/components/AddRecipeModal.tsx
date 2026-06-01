@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Field, FieldError, FieldLabel } from "@/shared/components/ui/field"
 import { Input } from "@/shared/components/ui/input"
 import { Textarea } from "@/shared/components/ui/textarea"
-import { useAddRecipe } from "../hooks/useAddRecipe"
+import { useRecipes } from "../hooks/useRecipes"
 import { Spinner } from "@/shared/components/ui/spinner"
 import { useState } from "react"
 import { uploadRecipeImage } from "../fetcher"
@@ -25,7 +25,7 @@ import { toast } from "sonner"
 
 export function AddRecipeModal() {
 	const { authUser } = useAuth()
-	const { mutate, isPending } = useAddRecipe()
+	const { addRecipe, isAdding } = useRecipes()
 
 	const [file, setFile] = useState<File | null>(null)
 
@@ -59,7 +59,7 @@ export function AddRecipeModal() {
 			image_path = result.imagePath
 		}
 
-		mutate({ ...data, image_url, image_path }, { onSuccess: () => reset() })
+		addRecipe({ ...data, image_url, image_path }, { onSuccess: () => reset() })
 	}
 
 	return (
@@ -113,8 +113,8 @@ export function AddRecipeModal() {
 						/>
 					</Field>
 
-					<Button type="submit" disabled={!isValid || isPending}>
-						{isPending ? (
+					<Button type="submit" disabled={!isValid || isAdding}>
+						{isAdding ? (
 							<Spinner className="size-4" />
 						) : (
 							"Add recipe"

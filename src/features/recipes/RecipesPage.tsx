@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader } from "@/shared/components/ui/card"
-import { useGetAllRecipes } from "./hooks/useRecipes"
+import { useRecipes } from "./hooks/useRecipes"
 import { AddRecipeModal } from "./components/AddRecipeModal"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import RecipeCard from "./components/RecipeCard"
 
 function RecipesPage() {
-	const { data, isLoading, error } = useGetAllRecipes()
+	const { recipes: data, isLoading, isError: error } = useRecipes()
 
 	if (isLoading)
 		return (

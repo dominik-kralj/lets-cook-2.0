@@ -4,7 +4,7 @@ import {
 	type CreateIngredientForm,
 	type Ingredient,
 } from "../validation/schema"
-import { useEditIngredient } from "../hooks/useEditIngredient"
+import { useRecipes } from "../hooks/useRecipes"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import {
@@ -27,7 +27,7 @@ type Props = {
 
 function EditIngredientModal({ ingredient, recipeId }: Props) {
 	const [open, setOpen] = useState(false)
-	const { mutate, isPending } = useEditIngredient(recipeId)
+	const { editIngredient, isEditingIngredient } = useRecipes(recipeId)
 	const {
 		register,
 		handleSubmit,
@@ -41,7 +41,7 @@ function EditIngredientModal({ ingredient, recipeId }: Props) {
 		},
 	})
 	const onSubmit = (data: CreateIngredientForm) => {
-		mutate({ id: ingredient.id, data }, { onSuccess: () => setOpen(false) })
+		editIngredient({ id: ingredient.id, data }, { onSuccess: () => setOpen(false) })
 	}
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -101,9 +101,9 @@ function EditIngredientModal({ ingredient, recipeId }: Props) {
 					</div>
 					<Button
 						type="submit"
-						disabled={!isValid || !isDirty || isPending}
+						disabled={!isValid || !isDirty || isEditingIngredient}
 					>
-						{isPending ? <Spinner className="size-4" /> : "Save"}
+						{isEditingIngredient ? <Spinner className="size-4" /> : "Save"}
 					</Button>
 				</form>
 			</DialogContent>

@@ -4,7 +4,7 @@ import { Button } from "@/shared/components/ui/button"
 import { Skeleton } from "@/shared/components/ui/skeleton"
 import { useGetCollection } from "./hooks/useCollections"
 import { useCollections } from "./hooks/useCollections"
-import { useGetAllRecipes } from "@/features/recipes/hooks/useRecipes"
+import { useRecipes } from "@/features/recipes/hooks/useRecipes"
 import RecipeCard from "@/features/recipes/components/RecipeCard"
 import {
 	Dialog,
@@ -19,7 +19,7 @@ import { useState } from "react"
 function AddRecipeDialog({ collectionId }: { collectionId: string }) {
 	const [open, setOpen] = useState(false)
 	const [search, setSearch] = useState("")
-	const { data: recipes } = useGetAllRecipes()
+	const { recipes } = useRecipes()
 	const { addRecipe } = useCollections()
 
 	const filtered =

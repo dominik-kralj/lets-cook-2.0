@@ -50,7 +50,17 @@ export type CreateRecipeForm = z.infer<typeof createRecipeFormSchema>
 export type CreateIngredientForm = z.infer<typeof createIngredientFormSchema>
 export type CreateStepForm = z.infer<typeof createStepFormSchema>
 
-export type editRecipePayload = {
+export type AddIngredientsPayload = {
+	recipeId: string
+	ingredients: CreateIngredientForm[]
+}
+
+export type EditIngredientPayload = {
+	id: string
+	data: CreateIngredientForm
+}
+
+export type EditRecipePayload = {
 	id: string
 	data: CreateRecipeForm
 	oldImagePath?: string | null
@@ -58,4 +68,15 @@ export type editRecipePayload = {
 export type DeleteRecipePayload = {
 	id: string
 	image_path?: string
+}
+
+export type AddStepsPayload = {
+	recipeId: string
+	steps: CreateStepForm[]
+	currentStepsCount: number
+}
+
+export type EditStepPayload = {
+	id: string
+	data: CreateStepForm
 }

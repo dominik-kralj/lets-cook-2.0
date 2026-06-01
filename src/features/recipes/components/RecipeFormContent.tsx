@@ -4,8 +4,7 @@ import { Trash2 } from "lucide-react"
 import { Spinner } from "@/shared/components/ui/spinner"
 import AddIngredientsForm from "./AddIngredientsForm"
 import AddStepsForm from "./AddStepsForm"
-import { useAddIngredients } from "../hooks/useAddIngredients"
-import { useAddSteps } from "../hooks/useAddSteps"
+import { useRecipes } from "../hooks/useRecipes"
 import type { Ingredient, Step } from "../validation/schema"
 import EditIngredientModal from "./EditIngredientModal"
 import EditStepModal from "./EditStepModal"
@@ -37,9 +36,12 @@ export function RecipeFormContent({
 		removeStep,
 		reset,
 	} = useRecipeForm()
-	const { mutate: addIngredients, isPending: isSavingIngredients } =
-		useAddIngredients()
-	const { mutate: addSteps, isPending: isSavingSteps } = useAddSteps()
+	const {
+		addIngredients,
+		isAddingIngredients: isSavingIngredients,
+		addSteps,
+		isAddingSteps: isSavingSteps,
+	} = useRecipes()
 
 	const hasChanges =
 		pending_ingredients.length > 0 || pending_steps.length > 0

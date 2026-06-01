@@ -15,7 +15,7 @@ import {
 	type CreateRecipeForm,
 	type Recipe,
 } from "../validation/schema"
-import { useEditRecipe } from "../hooks/useEditRecipe"
+import { useRecipes } from "../hooks/useRecipes"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Spinner } from "@/shared/components/ui/spinner"
@@ -30,7 +30,7 @@ type Props = {
 
 export function EditRecipeModal({ recipe }: Props) {
 	const { authUser } = useAuth()
-	const { mutate, isPending } = useEditRecipe()
+	const { editRecipe, isEditing } = useRecipes()
 
 	const [file, setFile] = useState<File | null>(null)
 
@@ -70,7 +70,7 @@ export function EditRecipeModal({ recipe }: Props) {
 			image_path = result.imagePath
 		}
 
-		mutate(
+		editRecipe(
 			{
 				id: recipe.id,
 				data: { ...data, image_url, image_path },
@@ -149,10 +149,10 @@ export function EditRecipeModal({ recipe }: Props) {
 
 					<Button
 						type="submit"
-						disabled={!isValid || isPending || !isFormDirty}
+						disabled={!isValid || isEditing || !isFormDirty}
 						className="w-full"
 					>
-						{isPending ? (
+						{isEditing ? (
 							<Spinner className="size-4" />
 						) : (
 							"Save changes"
