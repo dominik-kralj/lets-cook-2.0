@@ -11,7 +11,7 @@ import {
 	SidebarTrigger,
 } from "@/shared/components/ui/sidebar"
 import { Link, Outlet } from "react-router"
-import { UtensilsCrossed, HeartIcon, Library } from "lucide-react"
+import { UtensilsCrossed, HeartIcon, Library, Package } from "lucide-react"
 import { Spinner } from "@/shared/components/ui/spinner"
 import { Suspense } from "react"
 
@@ -22,6 +22,7 @@ function DashboardLayout() {
 				<SidebarContent>
 					<SidebarGroup>
 						<SidebarGroupLabel>Menu</SidebarGroupLabel>
+
 						<SidebarGroupContent>
 							<SidebarMenu>
 								<SidebarMenuItem>
@@ -32,6 +33,7 @@ function DashboardLayout() {
 										</Link>
 									</SidebarMenuButton>
 								</SidebarMenuItem>
+
 								<SidebarMenuItem>
 									<SidebarMenuButton asChild>
 										<Link to="/favorites">
@@ -40,6 +42,7 @@ function DashboardLayout() {
 										</Link>
 									</SidebarMenuButton>
 								</SidebarMenuItem>
+
 								<SidebarMenuItem>
 									<SidebarMenuButton asChild>
 										<Link to="/collections">
@@ -48,11 +51,21 @@ function DashboardLayout() {
 										</Link>
 									</SidebarMenuButton>
 								</SidebarMenuItem>
+
+								<SidebarMenuItem>
+									<SidebarMenuButton asChild>
+										<Link to="/pantry">
+											<Package />
+											<span>Pantry</span>
+										</Link>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
 							</SidebarMenu>
 						</SidebarGroupContent>
 					</SidebarGroup>
 				</SidebarContent>
 			</Sidebar>
+
 			<div className="flex flex-1 flex-col">
 				<header className="sticky top-0 z-10 flex items-center border-b bg-background p-4">
 					<SidebarTrigger />
@@ -60,6 +73,7 @@ function DashboardLayout() {
 						🍳 Let's Cook
 					</Link>
 				</header>
+
 				<main className="flex-1 p-6">
 					<Suspense fallback={<Spinner />}>
 						<Outlet />

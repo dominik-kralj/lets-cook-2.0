@@ -6,6 +6,7 @@ import AuthRoute from "@/features/auth/AuthRoute"
 import RootLayout from "@/layouts/RootLayout"
 import DashboardLayout from "@/layouts/DashboardLayout"
 
+const PantryPage = lazy(() => import("@/features/pantry/PantryPage"))
 const CollectionPage = lazy(
 	() => import("@/features/collections/CollectionsPage"),
 )
@@ -56,6 +57,7 @@ const router = createBrowserRouter([
 								path: "/collections/:id",
 								element: <CollectionDetailsPage />,
 							},
+							{ path: "/pantry", element: <PantryPage /> },
 						],
 					},
 				],
