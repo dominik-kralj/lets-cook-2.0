@@ -5,7 +5,7 @@ import { Outlet } from "react-router"
 function RootLayout() {
 	return (
 		<div className="flex min-h-screen flex-col">
-			<main className="flex flex-1 items-center justify-center px-4">
+			<main className="flex-1 px-4">
 				<Suspense fallback={<Spinner />}>
 					<Outlet />
 				</Suspense>

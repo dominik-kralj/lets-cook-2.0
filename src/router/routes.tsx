@@ -5,6 +5,7 @@ import ProtectedRoute from "@/features/auth/ProtectedRoute"
 import AuthRoute from "@/features/auth/AuthRoute"
 import RootLayout from "@/layouts/RootLayout"
 import DashboardLayout from "@/layouts/DashboardLayout"
+import AuthLayout from "@/layouts/AuthLayout"
 
 const PantryPage = lazy(() => import("@/features/pantry/PantryPage"))
 const CollectionPage = lazy(
@@ -30,10 +31,15 @@ const router = createBrowserRouter([
 		children: [
 			{ path: "/", element: <HomePage /> },
 			{
-				element: <AuthRoute />,
+				element: <AuthLayout />,
 				children: [
-					{ path: "/login", element: <Login /> },
-					{ path: "/signup", element: <Signup /> },
+					{
+						element: <AuthRoute />,
+						children: [
+							{ path: "/login", element: <Login /> },
+							{ path: "/signup", element: <Signup /> },
+						],
+					},
 				],
 			},
 			{
