@@ -26,8 +26,8 @@ function AddRecipeDialog({ collectionId }: { collectionId: string }) {
 				<div className="mt-2 flex max-h-64 flex-col gap-2 overflow-y-auto">
 					{filtered.map((recipe) => (
 						<div key={recipe.id} className="flex items-center justify-between rounded-lg border px-3 py-2 text-sm">
-							<span>{recipe.name}</span>
-							<Button size="sm" variant="outline" onClick={() => { addRecipe({ collection_id: collectionId, recipe_id: recipe.id }); setOpen(false) }}>
+							<span className="min-w-0 truncate">{recipe.name}</span>
+							<Button size="sm" variant="outline" className="shrink-0" onClick={() => { addRecipe({ collection_id: collectionId, recipe_id: recipe.id }); setOpen(false) }}>
 								Add
 							</Button>
 						</div>
@@ -64,44 +64,44 @@ function CollectionRecipeGrid({ data, onRemove }: { data: Collection; onRemove: 
 	)
 }
 
+function CollectionDetailSkeleton() {
+	return (
+		<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+			{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-32 w-full" />)}
+		</div>
+	)
+}
+
 function CollectionDetailPage() {
 	const { id } = useParams()
 	const navigate = useNavigate()
 	const { data, isLoading, isError, refetch } = useGetCollection(id ?? "")
 	const { removeRecipe } = useCollections()
 
-	if (isLoading) return (
-		<div className="px-6">
-			<Skeleton className="mb-4 h-9 w-20" />
-			<Skeleton className="mb-2 h-10 w-1/2" />
-			<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-				{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-32 w-full" />)}
-			</div>
-		</div>
-	)
-
-	if (isError) return (
-		<div className="flex flex-col items-center gap-4 p-6">
-			<p>Something went wrong</p>
-			<Button onClick={() => refetch()}>Try again</Button>
-		</div>
-	)
-
-	if (!data) return null
-
 	return (
-		<div className="px-6 pb-10">
-			<Button variant="ghost" onClick={() => navigate("/collections")} className="mb-4 -ml-3">
-				<ArrowLeft className="size-4" /> Back
-			</Button>
-			<div className="mb-6 flex items-center justify-between">
-				<div>
-					<h1 className="text-3xl font-bold">{data.name}</h1>
-					{data.description && <p className="mt-1 text-muted-foreground">{data.description}</p>}
-				</div>
-				<AddRecipeDialog collectionId={data.id} />
+		<div className="pb-10">
+			<div className="sticky top-14 z-[5] -mx-6 -mt-6 mb-6 flex items-center gap-2 border-b bg-background px-4 py-3">
+				<Button variant="ghost" size="icon" onClick={() => navigate("/collections")} className="-ml-1 shrink-0">
+					<ArrowLeft className="size-4" />
+				</Button>
+				{data && (
+					<>
+						<span className="min-w-0 flex-1 truncate font-semibold">{data.name}</span>
+						<AddRecipeDialog collectionId={data.id} />
+					</>
+				)}
 			</div>
-			<CollectionRecipeGrid data={data} onRemove={removeRecipe} />
+			{isLoading ? <CollectionDetailSkeleton /> : isError ? (
+				<div className="flex flex-col items-center gap-4">
+					<p>Something went wrong</p>
+					<Button onClick={() => refetch()}>Try again</Button>
+				</div>
+			) : !data ? null : (
+				<>
+					{data.description && <p className="mb-6 text-muted-foreground">{data.description}</p>}
+					<CollectionRecipeGrid data={data} onRemove={removeRecipe} />
+				</>
+			)}
 		</div>
 	)
 }
