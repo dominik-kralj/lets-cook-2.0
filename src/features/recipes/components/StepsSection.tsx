@@ -44,7 +44,7 @@ export function StepsSection({ recipeId, steps, pendingSteps, isDeletingStep, on
 			{!steps.length ? (
 				<p className="text-sm text-muted-foreground">No steps yet</p>
 			) : (
-				<ol className="space-y-3">
+				<ol className="max-h-72 space-y-3 overflow-y-auto">
 					{steps.sort((a, b) => a.order - b.order).map((step, index) => (
 						<li key={step.id} className="flex items-center gap-3 text-sm">
 							<span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">

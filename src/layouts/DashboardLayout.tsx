@@ -15,6 +15,7 @@ import { Link, Outlet } from "react-router"
 import { UtensilsCrossed, HeartIcon, Library, Package } from "lucide-react"
 import { Spinner } from "@/shared/components/ui/spinner"
 import { Suspense } from "react"
+import { TooltipProvider } from "@/shared/components/ui/tooltip"
 
 const NAV_ITEMS = [
 	{ to: "/recipes", icon: UtensilsCrossed, label: "Recipes" },
@@ -48,30 +49,41 @@ function SidebarNav() {
 	)
 }
 
+function PageLoader() {
+	return (
+		<div className="flex flex-1 flex-col items-center justify-center gap-3 text-muted-foreground">
+			<Spinner className="size-8" />
+			<p className="text-sm">Loading…</p>
+		</div>
+	)
+}
+
 function DashboardLayout() {
 	return (
-		<SidebarProvider>
-			<Sidebar>
-				<SidebarContent>
-					<SidebarNav />
-				</SidebarContent>
-			</Sidebar>
+		<TooltipProvider>
+			<SidebarProvider>
+				<Sidebar>
+					<SidebarContent>
+						<SidebarNav />
+					</SidebarContent>
+				</Sidebar>
 
-			<div className="flex flex-1 flex-col">
-				<header className="sticky top-0 z-10 flex items-center border-b bg-background p-4">
-					<SidebarTrigger />
-					<Link to="/" className="font-bold">
-						🍳 Let's Cook
-					</Link>
-				</header>
+				<div className="flex flex-1 flex-col">
+					<header className="sticky top-0 z-10 flex h-14 items-center bg-background px-4">
+						<SidebarTrigger />
+						<Link to="/" className="font-bold">
+							🍳 Let's Cook
+						</Link>
+					</header>
 
-				<main className="flex-1 p-6">
-					<Suspense fallback={<Spinner />}>
-						<Outlet />
-					</Suspense>
-				</main>
-			</div>
-		</SidebarProvider>
+					<main className="flex flex-1 flex-col p-6">
+						<Suspense fallback={<PageLoader />}>
+							<Outlet />
+						</Suspense>
+					</main>
+				</div>
+			</SidebarProvider>
+		</TooltipProvider>
 	)
 }
 

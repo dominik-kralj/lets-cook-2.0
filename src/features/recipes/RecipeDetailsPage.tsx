@@ -43,17 +43,17 @@ function RecipeDetailsPage() {
 	if (isError) return <RecipeDetailsError refetch={refetch} />
 
 	return (
-		<div className="h-100 flex-1 px-6 pb-10">
+		<div className="flex-1 px-6 pb-10">
 			<Button variant="ghost" onClick={() => navigate("/recipes")} className="mb-4 -ml-3">
 				<ArrowLeft className="size-4" />
 				Back
 			</Button>
 			{data.image_url && (
-				<img src={data.image_url} alt={data.name} className="mb-6 h-64 w-full rounded-xl object-cover" />
+				<img src={data.image_url} alt={data.name} className="mb-6 h-48 w-full rounded-xl object-cover sm:h-64" />
 			)}
-			<div className="mb-8 flex items-start justify-between gap-4">
-				<div>
-					<h1 className="text-3xl font-bold">{data.name}</h1>
+			<div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+				<div className="min-w-0">
+					<h1 className="break-words text-2xl font-bold sm:text-3xl">{data.name}</h1>
 					{data.description && <p className="mt-2 text-muted-foreground">{data.description}</p>}
 				</div>
 				<div className="flex shrink-0 gap-2">

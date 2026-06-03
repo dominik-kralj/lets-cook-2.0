@@ -44,7 +44,7 @@ export function IngredientsSection({ recipeId, ingredients, pendingIngredients, 
 			{!ingredients.length ? (
 				<p className="text-sm text-muted-foreground">No ingredients yet</p>
 			) : (
-				<ul className="space-y-2">
+				<ul className="max-h-64 space-y-2 overflow-y-auto">
 					{ingredients.map((ingredient) => (
 						<li key={ingredient.id} className="flex items-center justify-between text-sm">
 							<span>

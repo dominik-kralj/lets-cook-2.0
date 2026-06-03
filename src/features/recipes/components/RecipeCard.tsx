@@ -12,6 +12,7 @@ import { EditRecipeModal } from "./EditRecipeModal"
 import { DeleteRecipeModal } from "./DeleteRecipeModal"
 import { useFavorites } from "@/features/favorites/hooks/useFavorites"
 import type { Recipe } from "../validation/schema"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/components/ui/tooltip"
 
 type Props = {
 	recipe: Recipe
@@ -23,11 +24,18 @@ function RecipeCard({ recipe, showActions = true }: Props) {
 
 	return (
 		<Card>
-			<CardHeader className="flex flex-row items-center justify-between">
-				<CardTitle className="hover:underline">
-					<Link to={`/recipes/${recipe.id}`}>{recipe.name}</Link>
+			<CardHeader className="flex flex-row items-center justify-between gap-2">
+				<CardTitle className="min-w-0">
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<Link to={`/recipes/${recipe.id}`} className="block truncate hover:underline">
+								{recipe.name}
+							</Link>
+						</TooltipTrigger>
+						<TooltipContent>{recipe.name}</TooltipContent>
+					</Tooltip>
 				</CardTitle>
-				<div className="flex gap-1">
+				<div className="flex shrink-0 gap-1">
 					<Button
 						variant="ghost"
 						size="icon"
@@ -51,7 +59,7 @@ function RecipeCard({ recipe, showActions = true }: Props) {
 				</div>
 			</CardHeader>
 			<CardContent>
-				<CardDescription>{recipe.description}</CardDescription>
+				<CardDescription className="line-clamp-2">{recipe.description}</CardDescription>
 			</CardContent>
 		</Card>
 	)

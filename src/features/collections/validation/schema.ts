@@ -5,7 +5,7 @@ export const collectionSchema = z.object({
 	id: uuid(),
 	user_id: uuid(),
 	name: string(),
-	description: string().optional(),
+	description: string().nullish(),
 	created_at: string(),
 	collection_recipes: z
 		.array(
