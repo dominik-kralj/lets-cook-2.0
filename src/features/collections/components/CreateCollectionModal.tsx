@@ -19,8 +19,7 @@ import { Field, FieldError, FieldLabel } from "@/shared/components/ui/field"
 import { Input } from "@/shared/components/ui/input"
 import { Textarea } from "@/shared/components/ui/textarea"
 
-function CreateCollectionModal() {
-	const [open, setOpen] = useState(false)
+function CreateCollectionForm({ onSuccess }: { onSuccess: () => void }) {
 	const { createCollection } = useCollections()
 	const {
 		register,
@@ -30,14 +29,44 @@ function CreateCollectionModal() {
 	} = useForm<CreateCollectionForm>({
 		resolver: zodResolver(createCollectionFormSchema),
 	})
+
 	const onSubmit = (data: CreateCollectionForm) => {
 		createCollection(data, {
-			onSuccess: () => {
-				reset()
-				setOpen(false)
-			},
+			onSuccess: () => { reset(); onSuccess() },
 		})
 	}
+
+	return (
+		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+			<Field data-invalid={!!errors.name}>
+				<FieldLabel htmlFor="col-name">Name</FieldLabel>
+				<Input
+					id="col-name"
+					autoComplete="off"
+					{...register("name")}
+					placeholder="e.g. Weekend Meals"
+				/>
+				{errors.name && <FieldError>{errors.name.message}</FieldError>}
+			</Field>
+			<Field data-invalid={!!errors.description}>
+				<FieldLabel htmlFor="col-desc">Description</FieldLabel>
+				<Textarea
+					id="col-desc"
+					autoComplete="off"
+					{...register("description")}
+					placeholder="Optional description"
+				/>
+			</Field>
+			<Button type="submit" disabled={!isValid}>
+				Create
+			</Button>
+		</form>
+	)
+}
+
+function CreateCollectionModal() {
+	const [open, setOpen] = useState(false)
+
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger
@@ -52,35 +81,7 @@ function CreateCollectionModal() {
 				<DialogHeader>
 					<DialogTitle>Create Collection</DialogTitle>
 				</DialogHeader>
-				<form
-					onSubmit={handleSubmit(onSubmit)}
-					className="flex flex-col gap-4"
-				>
-					<Field data-invalid={!!errors.name}>
-						<FieldLabel htmlFor="col-name">Name</FieldLabel>
-						<Input
-							id="col-name"
-							autoComplete="off"
-							{...register("name")}
-							placeholder="e.g. Weekend Meals"
-						/>
-						{errors.name && (
-							<FieldError>{errors.name.message}</FieldError>
-						)}
-					</Field>
-					<Field data-invalid={!!errors.description}>
-						<FieldLabel htmlFor="col-desc">Description</FieldLabel>
-						<Textarea
-							id="col-desc"
-							autoComplete="off"
-							{...register("description")}
-							placeholder="Optional description"
-						/>
-					</Field>
-					<Button type="submit" disabled={!isValid}>
-						Create
-					</Button>
-				</form>
+				<CreateCollectionForm onSuccess={() => setOpen(false)} />
 			</DialogContent>
 		</Dialog>
 	)

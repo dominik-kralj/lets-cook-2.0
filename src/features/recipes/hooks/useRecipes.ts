@@ -69,7 +69,7 @@ const useEditRecipe = () => {
 
 	return useMutation({
 		mutationFn: ({ id, data, oldImagePath }: EditRecipePayload) =>
-			editRecipe(id, data, oldImagePath),
+			editRecipe({ id, payload: data, oldImagePath }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: recipeKeys.all })
 			toast.success("Recipe updated!")
@@ -142,7 +142,7 @@ const useAddSteps = () => {
 
 	return useMutation({
 		mutationFn: ({ recipeId, steps, currentStepsCount }: AddStepsPayload) =>
-			addSteps(recipeId, steps, currentStepsCount),
+			addSteps({ recipeId, steps, currentStepsCount }),
 		onSuccess: (_, { recipeId }) => {
 			queryClient.invalidateQueries({ queryKey: recipeKeys.detail(recipeId) })
 		},

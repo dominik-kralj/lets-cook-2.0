@@ -38,11 +38,15 @@ export const createRecipe = async (
 	if (error) throw error
 }
 
-export const editRecipe = async (
-	id: string,
-	payload: CreateRecipeForm,
-	oldImagePath?: string | null,
-) => {
+export const editRecipe = async ({
+	id,
+	payload,
+	oldImagePath,
+}: {
+	id: string
+	payload: CreateRecipeForm
+	oldImagePath?: string | null
+}) => {
 	const { name, description, image_url, image_path } = payload
 
 	if (oldImagePath && image_path && oldImagePath !== image_path) {
@@ -73,23 +77,27 @@ export const deleteImageFromStorage = async (image_path: string) => {
 	if (error) throw error
 }
 
-export const uploadRecipeImage = async (
-	user_id: string,
-	filename: string,
-	file: File,
-) => {
+export const uploadRecipeImage = async ({
+	userId,
+	filename,
+	file,
+}: {
+	userId: string
+	filename: string
+	file: File
+}) => {
 	const { error } = await supabase.storage
 		.from("recipe-images")
-		.upload(`${user_id}/${filename}`, file)
+		.upload(`${userId}/${filename}`, file)
 	if (error) throw error
 
 	const { data } = supabase.storage
 		.from("recipe-images")
-		.getPublicUrl(`${user_id}/${filename}`)
+		.getPublicUrl(`${userId}/${filename}`)
 
 	return {
 		publicUrl: data.publicUrl,
-		imagePath: `${user_id}/${filename}`,
+		imagePath: `${userId}/${filename}`,
 	}
 }
 
@@ -128,16 +136,20 @@ export const deleteIngredient = async (ingredient_id: string) => {
 	if (error) throw error
 }
 
-export const addSteps = async (
-	recipe_id: string,
-	steps: CreateStepForm[],
-	currentStepsCount: number,
-) => {
+export const addSteps = async ({
+	recipeId,
+	steps,
+	currentStepsCount,
+}: {
+	recipeId: string
+	steps: CreateStepForm[]
+	currentStepsCount: number
+}) => {
 	const { error } = await supabase.from("steps").insert(
 		steps.map(({ description }, index) => ({
 			description,
 			order: currentStepsCount + index + 1,
-			recipe_id,
+			recipe_id: recipeId,
 		})),
 	)
 	if (error) throw error

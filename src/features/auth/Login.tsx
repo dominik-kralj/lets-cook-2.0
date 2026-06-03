@@ -16,22 +16,45 @@ import {
 	CardTitle,
 } from "@/shared/components/ui/card"
 import { useNavigate } from "react-router"
+import type { UseFormRegister, FieldErrors } from "react-hook-form"
+
+type LoginFormFieldsProps = {
+	register: UseFormRegister<Login>
+	errors: FieldErrors<Login>
+	isValid: boolean
+	onSubmit: React.FormEventHandler
+}
+
+function LoginFormFields({ register, errors, isValid, onSubmit }: LoginFormFieldsProps) {
+	return (
+		<CardContent>
+			<form onSubmit={onSubmit} className="flex flex-col gap-4">
+				<Field data-invalid={!!errors.email}>
+					<FieldLabel htmlFor="email">Email</FieldLabel>
+					<Input id="email" autoComplete="email" {...register("email")} placeholder="Email" />
+					{errors.email && <FieldError>{errors.email.message}</FieldError>}
+				</Field>
+				<Field data-invalid={!!errors.password}>
+					<FieldLabel htmlFor="password">Password</FieldLabel>
+					<Input id="password" type="password" autoComplete="current-password" {...register("password")} placeholder="Password" />
+					{errors.password && <FieldError>{errors.password.message}</FieldError>}
+				</Field>
+				<Button type="submit" disabled={!isValid} className="w-full">
+					Login
+				</Button>
+			</form>
+		</CardContent>
+	)
+}
 
 function Login() {
 	const navigate = useNavigate()
 	const { login } = useAuth()
-
 	const {
 		register,
 		handleSubmit,
 		formState: { errors, isValid },
-	} = useForm({
-		resolver: zodResolver(loginSchema),
-	})
-
-	const onSubmit = (data: Login) => {
-		login(data)
-	}
+	} = useForm({ resolver: zodResolver(loginSchema) })
 
 	return (
 		<Card className="w-full max-w-md">
@@ -39,50 +62,15 @@ function Login() {
 				<CardTitle>Login to your account</CardTitle>
 				<CardDescription>Enter your Email and Password</CardDescription>
 				<CardAction>
-					<Button variant="link" onClick={() => navigate("/signup")}>
-						Sign Up
-					</Button>
+					<Button variant="link" onClick={() => navigate("/signup")}>Sign Up</Button>
 				</CardAction>
 			</CardHeader>
-			<CardContent>
-				<form
-					onSubmit={handleSubmit(onSubmit)}
-					className="flex flex-col gap-4"
-				>
-					<Field data-invalid={!!errors.email}>
-						<FieldLabel htmlFor="email">Email</FieldLabel>
-						<Input
-							id="email"
-							autoComplete="email"
-							{...register("email")}
-							placeholder="Email"
-						/>
-						{errors.email && (
-							<FieldError>{errors.email.message}</FieldError>
-						)}
-					</Field>
-					<Field data-invalid={!!errors.password}>
-						<FieldLabel htmlFor="password">Password</FieldLabel>
-						<Input
-							id="password"
-							type="password"
-							autoComplete="current-password"
-							{...register("password")}
-							placeholder="Password"
-						/>
-						{errors.password && (
-							<FieldError>{errors.password.message}</FieldError>
-						)}
-					</Field>
-					<Button
-						type="submit"
-						disabled={!isValid}
-						className="w-full"
-					>
-						Login
-					</Button>
-				</form>
-			</CardContent>
+			<LoginFormFields
+				register={register}
+				errors={errors}
+				isValid={isValid}
+				onSubmit={handleSubmit((data: Login) => login(data))}
+			/>
 		</Card>
 	)
 }

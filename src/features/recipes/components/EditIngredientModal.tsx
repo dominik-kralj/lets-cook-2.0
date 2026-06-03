@@ -20,13 +20,13 @@ import { Spinner } from "@/shared/components/ui/spinner"
 import { Field, FieldError, FieldLabel } from "@/shared/components/ui/field"
 import { Input } from "@/shared/components/ui/input"
 
-type Props = {
+type EditIngredientFormProps = {
 	ingredient: Ingredient
 	recipeId: string
+	onSuccess: () => void
 }
 
-function EditIngredientModal({ ingredient, recipeId }: Props) {
-	const [open, setOpen] = useState(false)
+function EditIngredientForm({ ingredient, recipeId, onSuccess }: EditIngredientFormProps) {
 	const { editIngredient, isEditingIngredient } = useRecipes(recipeId)
 	const {
 		register,
@@ -40,9 +40,48 @@ function EditIngredientModal({ ingredient, recipeId }: Props) {
 			unit: ingredient.unit,
 		},
 	})
+
 	const onSubmit = (data: CreateIngredientForm) => {
-		editIngredient({ id: ingredient.id, data }, { onSuccess: () => setOpen(false) })
+		editIngredient({ id: ingredient.id, data }, { onSuccess })
 	}
+
+	return (
+		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+			<Field data-invalid={!!errors.name}>
+				<FieldLabel htmlFor="edit-ing-name">Name</FieldLabel>
+				<Input id="edit-ing-name" autoComplete="off" {...register("name")} />
+				{errors.name && <FieldError>{errors.name.message}</FieldError>}
+			</Field>
+			<div className="flex gap-2">
+				<Field data-invalid={!!errors.quantity} className="flex-1">
+					<FieldLabel htmlFor="edit-ing-qty">Quantity</FieldLabel>
+					<Input
+						id="edit-ing-qty"
+						type="number"
+						autoComplete="off"
+						{...register("quantity", { valueAsNumber: true })}
+					/>
+				</Field>
+				<Field data-invalid={!!errors.unit} className="flex-1">
+					<FieldLabel htmlFor="edit-ing-unit">Unit</FieldLabel>
+					<Input id="edit-ing-unit" autoComplete="off" {...register("unit")} />
+				</Field>
+			</div>
+			<Button type="submit" disabled={!isValid || !isDirty || isEditingIngredient}>
+				{isEditingIngredient ? <Spinner className="size-4" /> : "Save"}
+			</Button>
+		</form>
+	)
+}
+
+type Props = {
+	ingredient: Ingredient
+	recipeId: string
+}
+
+function EditIngredientModal({ ingredient, recipeId }: Props) {
+	const [open, setOpen] = useState(false)
+
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger
@@ -56,56 +95,11 @@ function EditIngredientModal({ ingredient, recipeId }: Props) {
 				<DialogHeader>
 					<DialogTitle>Edit Ingredient</DialogTitle>
 				</DialogHeader>
-				<form
-					onSubmit={handleSubmit(onSubmit)}
-					className="flex flex-col gap-4"
-				>
-					<Field data-invalid={!!errors.name}>
-						<FieldLabel htmlFor="edit-ing-name">Name</FieldLabel>
-						<Input
-							id="edit-ing-name"
-							autoComplete="off"
-							{...register("name")}
-						/>
-						{errors.name && (
-							<FieldError>{errors.name.message}</FieldError>
-						)}
-					</Field>
-					<div className="flex gap-2">
-						<Field
-							data-invalid={!!errors.quantity}
-							className="flex-1"
-						>
-							<FieldLabel htmlFor="edit-ing-qty">
-								Quantity
-							</FieldLabel>
-							<Input
-								id="edit-ing-qty"
-								type="number"
-								autoComplete="off"
-								{...register("quantity", {
-									valueAsNumber: true,
-								})}
-							/>
-						</Field>
-						<Field data-invalid={!!errors.unit} className="flex-1">
-							<FieldLabel htmlFor="edit-ing-unit">
-								Unit
-							</FieldLabel>
-							<Input
-								id="edit-ing-unit"
-								autoComplete="off"
-								{...register("unit")}
-							/>
-						</Field>
-					</div>
-					<Button
-						type="submit"
-						disabled={!isValid || !isDirty || isEditingIngredient}
-					>
-						{isEditingIngredient ? <Spinner className="size-4" /> : "Save"}
-					</Button>
-				</form>
+				<EditIngredientForm
+					ingredient={ingredient}
+					recipeId={recipeId}
+					onSuccess={() => setOpen(false)}
+				/>
 			</DialogContent>
 		</Dialog>
 	)

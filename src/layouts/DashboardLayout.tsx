@@ -9,60 +9,51 @@ import {
 	SidebarMenuItem,
 	SidebarProvider,
 	SidebarTrigger,
+	useSidebar,
 } from "@/shared/components/ui/sidebar"
 import { Link, Outlet } from "react-router"
 import { UtensilsCrossed, HeartIcon, Library, Package } from "lucide-react"
 import { Spinner } from "@/shared/components/ui/spinner"
 import { Suspense } from "react"
 
+const NAV_ITEMS = [
+	{ to: "/recipes", icon: UtensilsCrossed, label: "Recipes" },
+	{ to: "/favorites", icon: HeartIcon, label: "Favorites" },
+	{ to: "/collections", icon: Library, label: "Collections" },
+	{ to: "/pantry", icon: Package, label: "Pantry" },
+]
+
+function SidebarNav() {
+	const { setOpenMobile, isMobile } = useSidebar()
+	const closeMobileSidebar = () => { if (isMobile) setOpenMobile(false) }
+
+	return (
+		<SidebarGroup>
+			<SidebarGroupLabel>Menu</SidebarGroupLabel>
+			<SidebarGroupContent>
+				<SidebarMenu>
+					{NAV_ITEMS.map(({ to, icon: Icon, label }) => (
+						<SidebarMenuItem key={to}>
+							<SidebarMenuButton asChild>
+								<Link to={to} onClick={closeMobileSidebar}>
+									<Icon />
+									<span>{label}</span>
+								</Link>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+					))}
+				</SidebarMenu>
+			</SidebarGroupContent>
+		</SidebarGroup>
+	)
+}
+
 function DashboardLayout() {
 	return (
 		<SidebarProvider>
 			<Sidebar>
 				<SidebarContent>
-					<SidebarGroup>
-						<SidebarGroupLabel>Menu</SidebarGroupLabel>
-
-						<SidebarGroupContent>
-							<SidebarMenu>
-								<SidebarMenuItem>
-									<SidebarMenuButton asChild>
-										<Link to="/recipes">
-											<UtensilsCrossed />
-											<span>Recipes</span>
-										</Link>
-									</SidebarMenuButton>
-								</SidebarMenuItem>
-
-								<SidebarMenuItem>
-									<SidebarMenuButton asChild>
-										<Link to="/favorites">
-											<HeartIcon />
-											<span>Favorites</span>
-										</Link>
-									</SidebarMenuButton>
-								</SidebarMenuItem>
-
-								<SidebarMenuItem>
-									<SidebarMenuButton asChild>
-										<Link to="/collections">
-											<Library />
-											<span>Collections</span>
-										</Link>
-									</SidebarMenuButton>
-								</SidebarMenuItem>
-
-								<SidebarMenuItem>
-									<SidebarMenuButton asChild>
-										<Link to="/pantry">
-											<Package />
-											<span>Pantry</span>
-										</Link>
-									</SidebarMenuButton>
-								</SidebarMenuItem>
-							</SidebarMenu>
-						</SidebarGroupContent>
-					</SidebarGroup>
+					<SidebarNav />
 				</SidebarContent>
 			</Sidebar>
 

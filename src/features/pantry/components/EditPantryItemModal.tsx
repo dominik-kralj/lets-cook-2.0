@@ -20,10 +20,13 @@ import { Input } from "@/shared/components/ui/input"
 import { Spinner } from "@/shared/components/ui/spinner"
 import { Pencil } from "lucide-react"
 
-function EditPantryItemModal({ item }: { item: PantryItem }) {
-	const [open, setOpen] = useState(false)
-	const { updateItem, isUpdating } = usePantry()
+type EditPantryItemFormProps = {
+	item: PantryItem
+	onSuccess: () => void
+}
 
+function EditPantryItemForm({ item, onSuccess }: EditPantryItemFormProps) {
+	const { updateItem, isUpdating } = usePantry()
 	const {
 		register,
 		handleSubmit,
@@ -31,24 +34,46 @@ function EditPantryItemModal({ item }: { item: PantryItem }) {
 		formState: { errors, isValid, isDirty },
 	} = useForm<CreatePantryItemForm>({
 		resolver: zodResolver(createPantryItemFormSchema),
-		defaultValues: {
-			name: item.name,
-			quantity: item.quantity,
-			unit: item.unit,
-		},
+		defaultValues: { name: item.name, quantity: item.quantity, unit: item.unit },
 	})
 
 	const onSubmit = (data: CreatePantryItemForm) => {
-		updateItem(
-			{ id: item.id, data },
-			{
-				onSuccess: () => {
-					reset(data)
-					setOpen(false)
-				},
-			},
-		)
+		updateItem({ id: item.id, data }, {
+			onSuccess: () => { reset(data); onSuccess() },
+		})
 	}
+
+	return (
+		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+			<Field data-invalid={!!errors.name}>
+				<FieldLabel htmlFor="edit-pantry-name">Name</FieldLabel>
+				<Input id="edit-pantry-name" autoComplete="off" {...register("name")} />
+				{errors.name && <FieldError>{errors.name.message}</FieldError>}
+			</Field>
+			<div className="flex gap-2">
+				<Field data-invalid={!!errors.quantity} className="flex-1">
+					<FieldLabel htmlFor="edit-pantry-qty">Quantity</FieldLabel>
+					<Input
+						id="edit-pantry-qty"
+						type="number"
+						autoComplete="off"
+						{...register("quantity", { valueAsNumber: true })}
+					/>
+				</Field>
+				<Field data-invalid={!!errors.unit} className="flex-1">
+					<FieldLabel htmlFor="edit-pantry-unit">Unit</FieldLabel>
+					<Input id="edit-pantry-unit" autoComplete="off" {...register("unit")} />
+				</Field>
+			</div>
+			<Button type="submit" disabled={!isValid || isUpdating || !isDirty}>
+				{isUpdating ? <Spinner className="size-4" /> : "Save"}
+			</Button>
+		</form>
+	)
+}
+
+function EditPantryItemModal({ item }: { item: PantryItem }) {
+	const [open, setOpen] = useState(false)
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -63,56 +88,7 @@ function EditPantryItemModal({ item }: { item: PantryItem }) {
 				<DialogHeader>
 					<DialogTitle>Edit Item</DialogTitle>
 				</DialogHeader>
-				<form
-					onSubmit={handleSubmit(onSubmit)}
-					className="flex flex-col gap-4"
-				>
-					<Field data-invalid={!!errors.name}>
-						<FieldLabel htmlFor="edit-pantry-name">Name</FieldLabel>
-						<Input
-							id="edit-pantry-name"
-							autoComplete="off"
-							{...register("name")}
-						/>
-						{errors.name && (
-							<FieldError>{errors.name.message}</FieldError>
-						)}
-					</Field>
-					<div className="flex gap-2">
-						<Field
-							data-invalid={!!errors.quantity}
-							className="flex-1"
-						>
-							<FieldLabel htmlFor="edit-pantry-qty">
-								Quantity
-							</FieldLabel>
-							<Input
-								id="edit-pantry-qty"
-								type="number"
-								autoComplete="off"
-								{...register("quantity", {
-									valueAsNumber: true,
-								})}
-							/>
-						</Field>
-						<Field data-invalid={!!errors.unit} className="flex-1">
-							<FieldLabel htmlFor="edit-pantry-unit">
-								Unit
-							</FieldLabel>
-							<Input
-								id="edit-pantry-unit"
-								autoComplete="off"
-								{...register("unit")}
-							/>
-						</Field>
-					</div>
-					<Button
-						type="submit"
-						disabled={!isValid || isUpdating || !isDirty}
-					>
-						{isUpdating ? <Spinner className="size-4" /> : "Save"}
-					</Button>
-				</form>
+				<EditPantryItemForm item={item} onSuccess={() => setOpen(false)} />
 			</DialogContent>
 		</Dialog>
 	)

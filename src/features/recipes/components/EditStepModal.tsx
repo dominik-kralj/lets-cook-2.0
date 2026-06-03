@@ -4,7 +4,6 @@ import {
 	type CreateStepForm,
 	type Step,
 } from "../validation/schema"
-
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import {
@@ -21,8 +20,13 @@ import { Field, FieldError, FieldLabel } from "@/shared/components/ui/field"
 import { Input } from "@/shared/components/ui/input"
 import { useRecipes } from "../hooks/useRecipes"
 
-function EditStepModal({ step, recipeId }: { step: Step; recipeId: string }) {
-	const [open, setOpen] = useState(false)
+type EditStepFormProps = {
+	step: Step
+	recipeId: string
+	onSuccess: () => void
+}
+
+function EditStepForm({ step, recipeId, onSuccess }: EditStepFormProps) {
 	const { editStep, isEditingStep } = useRecipes(recipeId)
 	const {
 		register,
@@ -32,9 +36,34 @@ function EditStepModal({ step, recipeId }: { step: Step; recipeId: string }) {
 		resolver: zodResolver(createStepFormSchema),
 		defaultValues: { description: step.description ?? "" },
 	})
+
 	const onSubmit = (data: CreateStepForm) => {
-		editStep({ id: step.id, data }, { onSuccess: () => setOpen(false) })
+		editStep({ id: step.id, data }, { onSuccess })
 	}
+
+	return (
+		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+			<Field data-invalid={!!errors.description}>
+				<FieldLabel htmlFor="edit-step-desc">Description</FieldLabel>
+				<Input
+					id="edit-step-desc"
+					autoComplete="off"
+					{...register("description")}
+				/>
+				{errors.description && (
+					<FieldError>{errors.description.message}</FieldError>
+				)}
+			</Field>
+			<Button type="submit" disabled={!isValid || !isDirty || isEditingStep}>
+				{isEditingStep ? <Spinner className="size-4" /> : "Save"}
+			</Button>
+		</form>
+	)
+}
+
+function EditStepModal({ step, recipeId }: { step: Step; recipeId: string }) {
+	const [open, setOpen] = useState(false)
+
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger
@@ -48,33 +77,11 @@ function EditStepModal({ step, recipeId }: { step: Step; recipeId: string }) {
 				<DialogHeader>
 					<DialogTitle>Edit Step</DialogTitle>
 				</DialogHeader>
-				<form
-					onSubmit={handleSubmit(onSubmit)}
-					className="flex flex-col gap-4"
-				>
-					<Field data-invalid={!!errors.description}>
-						<FieldLabel htmlFor="edit-step-desc">
-							Description
-						</FieldLabel>
-						<Input
-							id="edit-step-desc"
-							autoComplete="off"
-							{...register("description")}
-						/>
-
-						{errors.description && (
-							<FieldError>
-								{errors.description.message}
-							</FieldError>
-						)}
-					</Field>
-					<Button
-						type="submit"
-						disabled={!isValid || !isDirty || isEditingStep}
-					>
-						{isEditingStep ? <Spinner className="size-4" /> : "Save"}
-					</Button>
-				</form>
+				<EditStepForm
+					step={step}
+					recipeId={recipeId}
+					onSuccess={() => setOpen(false)}
+				/>
 			</DialogContent>
 		</Dialog>
 	)

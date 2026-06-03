@@ -1,15 +1,17 @@
 import { z, string, email } from "zod"
 
+const MIN_PASSWORD_LENGTH = 6
+
 export const loginSchema = z.object({
 	email: email(),
-	password: string().min(6),
+	password: string().min(MIN_PASSWORD_LENGTH),
 })
 
 export const signupSchema = z
 	.object({
 		username: string().min(1, { message: "Name is required" }),
 		email: email(),
-		password: string().min(6),
+		password: string().min(MIN_PASSWORD_LENGTH),
 		confirmPassword: string(),
 	})
 	.refine((data) => data.password === data.confirmPassword, {

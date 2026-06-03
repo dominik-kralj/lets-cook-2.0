@@ -23,47 +23,68 @@ import { uploadRecipeImage } from "../fetcher"
 import { useAuth } from "@/features/auth/hooks/useAuth"
 import { toast } from "sonner"
 
-export function AddRecipeModal() {
+const MAX_IMAGE_BYTES = 5_242_880
+
+function AddRecipeForm({ onSuccess }: { onSuccess: () => void }) {
 	const { authUser } = useAuth()
 	const { addRecipe, isAdding } = useRecipes()
-
 	const [file, setFile] = useState<File | null>(null)
-
 	const {
 		register,
 		handleSubmit,
 		formState: { errors, isValid },
 		reset,
-	} = useForm({
-		resolver: zodResolver(createRecipeFormSchema),
-	})
+	} = useForm({ resolver: zodResolver(createRecipeFormSchema) })
 
 	const onSubmit = async (data: CreateRecipeForm) => {
 		let image_url: string | null = null
 		let image_path: string | null = null
 
 		if (file) {
-			const maxSize = 5 * 1024 * 1024
-
-			if (file.size > maxSize) {
+			if (file.size > MAX_IMAGE_BYTES) {
 				toast.error("Image must be under 5MB")
 				return
 			}
-
-			const result = await uploadRecipeImage(
-				authUser!.id,
-				file.name,
-				file,
-			)
+			const result = await uploadRecipeImage({ userId: authUser!.id, filename: file.name, file })
 			image_url = result.publicUrl
 			image_path = result.imagePath
 		}
 
-		addRecipe({ ...data, image_url, image_path }, { onSuccess: () => reset() })
+		addRecipe({ ...data, image_url, image_path }, { onSuccess: () => { reset(); onSuccess() } })
 	}
 
 	return (
-		<Dialog>
+		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+			<Field data-invalid={!!errors.name}>
+				<FieldLabel>Name</FieldLabel>
+				<Input {...register("name")} placeholder="Name" />
+				{errors.name && <FieldError>{errors.name.message}</FieldError>}
+			</Field>
+			<Field data-invalid={!!errors.description}>
+				<FieldLabel>Recipe description</FieldLabel>
+				<Textarea {...register("description")} placeholder="Description" />
+				{errors.name && <FieldError>{errors.description?.message}</FieldError>}
+			</Field>
+			<Field>
+				<FieldLabel>Image</FieldLabel>
+				<Input
+					type="file"
+					accept="image/jpeg,image/png,image/webp"
+					onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+				/>
+			</Field>
+			<Button type="submit" disabled={!isValid || isAdding}>
+				{isAdding ? <Spinner className="size-4" /> : "Add recipe"}
+			</Button>
+		</form>
+	)
+}
+
+export function AddRecipeModal() {
+	const [open, setOpen] = useState(false)
+
+	return (
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger
 				render={
 					<Button>
@@ -76,51 +97,7 @@ export function AddRecipeModal() {
 				<DialogHeader>
 					<DialogTitle>Add New Recipe</DialogTitle>
 				</DialogHeader>
-
-				<form
-					onSubmit={handleSubmit(onSubmit)}
-					className="flex flex-col gap-4"
-				>
-					<Field data-invalid={!!errors.name}>
-						<FieldLabel>Name</FieldLabel>
-						<Input {...register("name")} placeholder="Name" />
-						{errors.name && (
-							<FieldError>{errors.name.message}</FieldError>
-						)}
-					</Field>
-
-					<Field data-invalid={!!errors.description}>
-						<FieldLabel>Recipe description</FieldLabel>
-						<Textarea
-							{...register("description")}
-							placeholder="Description"
-						/>
-						{errors.name && (
-							<FieldError>
-								{errors.description?.message}
-							</FieldError>
-						)}
-					</Field>
-
-					<Field>
-						<FieldLabel>Image</FieldLabel>
-						<Input
-							type="file"
-							accept="image/jpeg,image/png,image/webp"
-							onChange={(e) =>
-								setFile(e.target.files?.[0] ?? null)
-							}
-						/>
-					</Field>
-
-					<Button type="submit" disabled={!isValid || isAdding}>
-						{isAdding ? (
-							<Spinner className="size-4" />
-						) : (
-							"Add recipe"
-						)}
-					</Button>
-				</form>
+				<AddRecipeForm onSuccess={() => setOpen(false)} />
 			</DialogContent>
 		</Dialog>
 	)

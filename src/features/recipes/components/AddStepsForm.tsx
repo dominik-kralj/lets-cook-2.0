@@ -15,10 +15,8 @@ import { Plus } from "lucide-react"
 import { useRecipeForm } from "../context/RecipeFormContext"
 import { useState } from "react"
 
-function AddStepsForm() {
+function StepForm({ onSuccess }: { onSuccess: () => void }) {
 	const { addStep } = useRecipeForm()
-	const [open, setOpen] = useState(false)
-
 	const {
 		register,
 		handleSubmit,
@@ -31,8 +29,30 @@ function AddStepsForm() {
 	const onSubmit = (data: CreateStepForm) => {
 		addStep(data)
 		reset()
-		setOpen(false)
+		onSuccess()
 	}
+
+	return (
+		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+			<Field data-invalid={!!errors.description}>
+				<FieldLabel>Description</FieldLabel>
+				<Input
+					{...register("description")}
+					placeholder="e.g. Mix flour and eggs"
+				/>
+				{errors.description && (
+					<FieldError>{errors.description.message}</FieldError>
+				)}
+			</Field>
+			<Button type="submit" disabled={!isValid}>
+				Add Step
+			</Button>
+		</form>
+	)
+}
+
+function AddStepsForm() {
+	const [open, setOpen] = useState(false)
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -48,26 +68,7 @@ function AddStepsForm() {
 				<DialogHeader>
 					<DialogTitle>Add Step</DialogTitle>
 				</DialogHeader>
-				<form
-					onSubmit={handleSubmit(onSubmit)}
-					className="flex flex-col gap-4"
-				>
-					<Field data-invalid={!!errors.description}>
-						<FieldLabel>Description</FieldLabel>
-						<Input
-							{...register("description")}
-							placeholder="e.g. Mix flour and eggs"
-						/>
-						{errors.description && (
-							<FieldError>
-								{errors.description.message}
-							</FieldError>
-						)}
-					</Field>
-					<Button type="submit" disabled={!isValid}>
-						Add Step
-					</Button>
-				</form>
+				<StepForm onSuccess={() => setOpen(false)} />
 			</DialogContent>
 		</Dialog>
 	)

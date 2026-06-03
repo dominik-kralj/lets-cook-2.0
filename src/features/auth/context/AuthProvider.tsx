@@ -9,41 +9,37 @@ type Props = {
 	children: ReactNode
 }
 
+function useSessionSync(setAuthUser: (user: AuthUser | null) => void) {
+	useEffect(() => {
+		supabase.auth.getSession().then(({ data: { session } }) => {
+			setAuthUser(
+				session?.user ? { id: session.user.id, email: session.user.email! } : null,
+			)
+		})
+
+		const { data } = supabase.auth.onAuthStateChange((_, session) => {
+			setAuthUser(
+				session?.user ? { id: session.user.id, email: session.user.email! } : null,
+			)
+		})
+
+		return () => data.subscription.unsubscribe()
+	}, [setAuthUser])
+}
+
 export function AuthProvider({ children }: Props) {
 	const [authUser, setAuthUser] = useState<AuthUser | null>(null)
 	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
-		supabase.auth.getSession().then(({ data: { session } }) => {
-			setAuthUser(
-				session?.user
-					? { id: session.user.id, email: session.user.email! }
-					: null,
-			)
-			setLoading(false)
-		})
-
-		const { data } = supabase.auth.onAuthStateChange((_, session) => {
-			setAuthUser(
-				session?.user
-					? { id: session.user.id, email: session.user.email! }
-					: null,
-			)
-		})
-
-		return () => data.subscription.unsubscribe()
+		supabase.auth.getSession().then(() => setLoading(false))
 	}, [])
+
+	useSessionSync(setAuthUser)
 
 	const login = async ({ email, password }: Login) => {
 		try {
-			const response = await supabase.auth.signInWithPassword({
-				email,
-				password,
-			})
-
-			const user = response.data.user
-
-			if (!user) return
+			await supabase.auth.signInWithPassword({ email, password })
 		} catch (error) {
 			console.error(error)
 		}
@@ -51,9 +47,7 @@ export function AuthProvider({ children }: Props) {
 
 	const logout = async () => {
 		try {
-			const response = await supabase.auth.signOut()
-
-			if (!response) return
+			await supabase.auth.signOut()
 		} catch (error) {
 			console.error(error)
 		}
@@ -61,26 +55,13 @@ export function AuthProvider({ children }: Props) {
 
 	const signup = async ({ email, password }: Signup) => {
 		try {
-			const response = await supabase.auth.signUp({
-				email,
-				password,
-			})
-
-			const user = response.data.user
-
-			if (!user) return
+			await supabase.auth.signUp({ email, password })
 		} catch (error) {
 			console.error(error)
 		}
 	}
 
-	const value: AuthContextType = {
-		authUser,
-		login,
-		logout,
-		signup,
-		loading,
-	}
+	const value: AuthContextType = { authUser, login, logout, signup, loading }
 
 	return <AuthContext value={value}>{children}</AuthContext>
 }
