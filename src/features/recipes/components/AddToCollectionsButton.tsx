@@ -32,19 +32,27 @@ export function AddToCollectionButton({ recipeId }: Props) {
 						No collections yet
 					</DropdownMenuItem>
 				) : (
-					collections.map((collection) => (
-						<DropdownMenuItem
-							key={collection.id}
-							onClick={() =>
-								addRecipe({
-									collection_id: collection.id,
-									recipe_id: recipeId,
-								})
-							}
-						>
-							{collection.name}
-						</DropdownMenuItem>
-					))
+					collections.map((collection) => {
+						const alreadyAdded =
+							collection.collection_recipes?.some(
+								(cr) => cr.recipe_id === recipeId,
+							)
+						return (
+							<DropdownMenuItem
+								key={collection.id}
+								disabled={alreadyAdded}
+								onClick={() =>
+									!alreadyAdded &&
+									addRecipe({
+										collection_id: collection.id,
+										recipe_id: recipeId,
+									})
+								}
+							>
+								{collection.name} {alreadyAdded && "✓"}
+							</DropdownMenuItem>
+						)
+					})
 				)}
 			</DropdownMenuContent>
 		</DropdownMenu>

@@ -86,18 +86,19 @@ export const uploadRecipeImage = async ({
 	filename: string
 	file: File
 }) => {
+	const uniqueFilename = `${Date.now()}-${filename}`
+	const path = `${userId}/${uniqueFilename}`
+
 	const { error } = await supabase.storage
 		.from("recipe-images")
-		.upload(`${userId}/${filename}`, file)
+		.upload(path, file)
 	if (error) throw error
 
-	const { data } = supabase.storage
-		.from("recipe-images")
-		.getPublicUrl(`${userId}/${filename}`)
+	const { data } = supabase.storage.from("recipe-images").getPublicUrl(path)
 
 	return {
 		publicUrl: data.publicUrl,
-		imagePath: `${userId}/${filename}`,
+		imagePath: path,
 	}
 }
 
