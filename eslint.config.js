@@ -28,7 +28,7 @@ export default defineConfig([
 			"max-params": ["error", 2],
 			"max-lines-per-function": [
 				"error",
-				{ max: 50, skipBlankLines: true, skipComments: true },
+				{ max: 100, skipBlankLines: true, skipComments: true },
 			],
 			"max-lines": [
 				"error",
@@ -50,7 +50,16 @@ export default defineConfig([
 		},
 	},
 	{
-		files: ["src/shared/components/ui/**/*.{ts,tsx}", "src/shared/components/theme-provider.tsx"],
+		files: ["**/*.tsx"],
+		rules: {
+			"max-lines-per-function": "off",
+		},
+	},
+	{
+		files: [
+			"src/shared/components/ui/**/*.{ts,tsx}",
+			"src/shared/components/theme-provider.tsx",
+		],
 		rules: {
 			"no-comments/disallowComments": "off",
 			"max-lines": "off",

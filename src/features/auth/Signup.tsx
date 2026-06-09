@@ -14,39 +14,48 @@ import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router"
 import { useAuth } from "./hooks/useAuth"
 import { signupSchema, type Signup } from "./validation/schemas"
-import type { UseFormRegister, FieldErrors } from "react-hook-form"
+import type {
+	UseFormRegister,
+	FieldErrors,
+	FieldError as RHFFieldError,
+	UseFormRegisterReturn,
+} from "react-hook-form"
+
+type SignupFieldProps = {
+	id: string
+	label: string
+	error?: RHFFieldError
+	registration: UseFormRegisterReturn
+	type?: string
+	autoComplete?: string
+	placeholder: string
+}
+
+function SignupField({ id, label, error, registration, type = "text", autoComplete, placeholder }: SignupFieldProps) {
+	return (
+		<Field data-invalid={!!error}>
+			<FieldLabel htmlFor={id}>{label}</FieldLabel>
+			<Input id={id} type={type} autoComplete={autoComplete} {...registration} placeholder={placeholder} />
+			{error && <FieldError>{error.message}</FieldError>}
+		</Field>
+	)
+}
 
 type SignupFormFieldsProps = {
 	register: UseFormRegister<Signup>
 	errors: FieldErrors<Signup>
 	isValid: boolean
-	onSubmit: React.FormEventHandler
+	onSubmit: React.ComponentProps<"form">["onSubmit"]
 }
 
 function SignupFormFields({ register, errors, isValid, onSubmit }: SignupFormFieldsProps) {
 	return (
 		<CardContent>
 			<form onSubmit={onSubmit} className="flex flex-col gap-4">
-				<Field data-invalid={!!errors.username}>
-					<FieldLabel htmlFor="username">Username</FieldLabel>
-					<Input id="username" autoComplete="username" {...register("username")} placeholder="Username" />
-					{errors.username && <FieldError>{errors.username.message}</FieldError>}
-				</Field>
-				<Field data-invalid={!!errors.email}>
-					<FieldLabel htmlFor="signup-email">Email</FieldLabel>
-					<Input id="signup-email" autoComplete="email" {...register("email")} placeholder="Email" />
-					{errors.email && <FieldError>{errors.email.message}</FieldError>}
-				</Field>
-				<Field data-invalid={!!errors.password}>
-					<FieldLabel htmlFor="signup-password">Password</FieldLabel>
-					<Input id="signup-password" type="password" autoComplete="new-password" {...register("password")} placeholder="Password" />
-					{errors.password && <FieldError>{errors.password.message}</FieldError>}
-				</Field>
-				<Field data-invalid={!!errors.confirmPassword}>
-					<FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
-					<Input id="confirmPassword" type="password" autoComplete="new-password" {...register("confirmPassword")} placeholder="Confirm Password" />
-					{errors.confirmPassword && <FieldError>{errors.confirmPassword.message}</FieldError>}
-				</Field>
+				<SignupField id="username" label="Username" autoComplete="username" registration={register("username")} error={errors.username} placeholder="Username" />
+				<SignupField id="signup-email" label="Email" autoComplete="email" registration={register("email")} error={errors.email} placeholder="Email" />
+				<SignupField id="signup-password" label="Password" type="password" autoComplete="new-password" registration={register("password")} error={errors.password} placeholder="Password" />
+				<SignupField id="confirmPassword" label="Confirm Password" type="password" autoComplete="new-password" registration={register("confirmPassword")} error={errors.confirmPassword} placeholder="Confirm Password" />
 				<Button type="submit" disabled={!isValid} className="w-full">
 					Signup
 				</Button>
@@ -74,9 +83,6 @@ function Signup() {
 			<CardHeader>
 				<CardTitle>Signup your account</CardTitle>
 				<CardDescription>Register new account</CardDescription>
-				<CardAction>
-					<Button variant="link" onClick={() => navigate("/login")}>Have an account? Login</Button>
-				</CardAction>
 			</CardHeader>
 			<SignupFormFields
 				register={register}
@@ -84,6 +90,11 @@ function Signup() {
 				isValid={isValid}
 				onSubmit={handleSubmit(onSubmit)}
 			/>
+			<CardAction>
+				<Button variant="link" onClick={() => navigate("/login")}>
+					Have an account? Login
+				</Button>
+			</CardAction>
 		</Card>
 	)
 }

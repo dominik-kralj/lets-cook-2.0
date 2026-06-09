@@ -45,12 +45,13 @@ const useRemoveFavorite = () => {
 
 export const useFavorites = () => {
 	const [pendingId, setPendingId] = useState<string | null>(null)
-	const favoritesQuery = useGetAllFavorites()
+	const { data: favorites, isLoading: isFavoritesLoading } =
+		useGetAllFavorites()
 	const { mutate: addFav } = useAddFavorite()
 	const { mutate: removeFav } = useRemoveFavorite()
 
 	const isFavorited = (recipe_id: string) =>
-		favoritesQuery.data?.some((f) => f.recipe_id === recipe_id) ?? false
+		favorites?.some((f) => f.recipe_id === recipe_id) ?? false
 
 	const toggleFavorite = (recipe_id: string) => {
 		setPendingId(recipe_id)
@@ -62,10 +63,18 @@ export const useFavorites = () => {
 	}
 
 	return {
-		favorites: favoritesQuery.data,
-		isLoading: favoritesQuery.isLoading,
+		favorites,
+		isLoading: isFavoritesLoading,
 		isFavorited,
 		toggleFavorite,
 		pendingId,
 	}
+}
+
+export const useIsRecipeFavorited = (recipe_id: string) => {
+	return useQuery({
+		queryKey: favoriteKeys.all,
+		queryFn: getFavorites,
+		select: (data) => data.some((f) => f.recipe_id === recipe_id),
+	})
 }
