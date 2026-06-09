@@ -35,7 +35,9 @@ function RecipeCard({ recipe, showActions = true }: Props) {
 
 	const handleToggle = () => {
 		setIsPending(true)
-		toggleFavorite(recipe.id)
+		toggleFavorite(recipe.id, {
+			onSettled: () => setIsPending(false),
+		})
 	}
 
 	return (

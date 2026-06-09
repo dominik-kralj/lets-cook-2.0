@@ -53,12 +53,25 @@ export const useFavorites = () => {
 	const isFavorited = (recipe_id: string) =>
 		favorites?.some((f) => f.recipe_id === recipe_id) ?? false
 
-	const toggleFavorite = (recipe_id: string) => {
+	const toggleFavorite = (
+		recipe_id: string,
+		options?: { onSettled?: () => void },
+	) => {
 		setPendingId(recipe_id)
 		if (isFavorited(recipe_id)) {
-			removeFav(recipe_id, { onSettled: () => setPendingId(null) })
+			removeFav(recipe_id, {
+				onSettled: () => {
+					setPendingId(null)
+					options?.onSettled?.()
+				},
+			})
 		} else {
-			addFav(recipe_id, { onSettled: () => setPendingId(null) })
+			addFav(recipe_id, {
+				onSettled: () => {
+					setPendingId(null)
+					options?.onSettled?.()
+				},
+			})
 		}
 	}
 
