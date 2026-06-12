@@ -9,6 +9,7 @@ import {
 	SidebarMenuItem,
 	SidebarProvider,
 	SidebarTrigger,
+	SidebarFooter,
 	useSidebar,
 } from "@/shared/components/ui/sidebar"
 import { Link, Outlet } from "react-router"
@@ -18,12 +19,16 @@ import {
 	Library,
 	Package,
 	Sparkles,
+	LayoutDashboard,
+	LogOut,
 } from "lucide-react"
 import { Spinner } from "@/shared/components/ui/spinner"
 import { Suspense } from "react"
 import { TooltipProvider } from "@/shared/components/ui/tooltip"
+import { useAuth } from "@/features/auth/hooks/useAuth"
 
 const NAV_ITEMS = [
+	{ to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
 	{ to: "/recipes", icon: UtensilsCrossed, label: "Recipes" },
 	{ to: "/favorites", icon: HeartIcon, label: "Favorites" },
 	{ to: "/collections", icon: Library, label: "Collections" },
@@ -33,28 +38,46 @@ const NAV_ITEMS = [
 
 function SidebarNav() {
 	const { setOpenMobile, isMobile } = useSidebar()
+	const { logout } = useAuth()
+
 	const closeMobileSidebar = () => {
 		if (isMobile) setOpenMobile(false)
 	}
 
 	return (
-		<SidebarGroup>
-			<SidebarGroupLabel>Menu</SidebarGroupLabel>
-			<SidebarGroupContent>
+		<>
+			<SidebarGroup>
+				<SidebarGroupLabel>Menu</SidebarGroupLabel>
+				<SidebarGroupContent>
+					<SidebarMenu>
+						{NAV_ITEMS.map(({ to, icon: Icon, label }) => (
+							<SidebarMenuItem key={to}>
+								<SidebarMenuButton asChild>
+									<Link to={to} onClick={closeMobileSidebar}>
+										<Icon />
+										<span>{label}</span>
+									</Link>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+						))}
+					</SidebarMenu>
+				</SidebarGroupContent>
+			</SidebarGroup>
+
+			<SidebarFooter>
 				<SidebarMenu>
-					{NAV_ITEMS.map(({ to, icon: Icon, label }) => (
-						<SidebarMenuItem key={to}>
-							<SidebarMenuButton asChild>
-								<Link to={to} onClick={closeMobileSidebar}>
-									<Icon />
-									<span>{label}</span>
-								</Link>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-					))}
+					<SidebarMenuItem>
+						<SidebarMenuButton
+							onClick={() => logout()}
+							className="text-muted-foreground hover:text-destructive"
+						>
+							<LogOut />
+							<span>Sign out</span>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
 				</SidebarMenu>
-			</SidebarGroupContent>
-		</SidebarGroup>
+			</SidebarFooter>
+		</>
 	)
 }
 
