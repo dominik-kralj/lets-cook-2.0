@@ -12,7 +12,13 @@ import {
 	useSidebar,
 } from "@/shared/components/ui/sidebar"
 import { Link, Outlet } from "react-router"
-import { UtensilsCrossed, HeartIcon, Library, Package } from "lucide-react"
+import {
+	UtensilsCrossed,
+	HeartIcon,
+	Library,
+	Package,
+	Sparkles,
+} from "lucide-react"
 import { Spinner } from "@/shared/components/ui/spinner"
 import { Suspense } from "react"
 import { TooltipProvider } from "@/shared/components/ui/tooltip"
@@ -22,11 +28,14 @@ const NAV_ITEMS = [
 	{ to: "/favorites", icon: HeartIcon, label: "Favorites" },
 	{ to: "/collections", icon: Library, label: "Collections" },
 	{ to: "/pantry", icon: Package, label: "Pantry" },
+	{ to: "/pantry-ai", icon: Sparkles, label: "Pantry AI" },
 ]
 
 function SidebarNav() {
 	const { setOpenMobile, isMobile } = useSidebar()
-	const closeMobileSidebar = () => { if (isMobile) setOpenMobile(false) }
+	const closeMobileSidebar = () => {
+		if (isMobile) setOpenMobile(false)
+	}
 
 	return (
 		<SidebarGroup>

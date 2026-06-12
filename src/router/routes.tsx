@@ -8,6 +8,7 @@ import DashboardLayout from "@/layouts/DashboardLayout"
 import AuthLayout from "@/layouts/AuthLayout"
 
 const PantryPage = lazy(() => import("@/features/pantry/PantryPage"))
+const PantryAiPage = lazy(() => import("@/features/ai/PantryAiPage"))
 const CollectionPage = lazy(
 	() => import("@/features/collections/CollectionsPage"),
 )
@@ -64,6 +65,7 @@ const router = createBrowserRouter([
 								element: <CollectionDetailsPage />,
 							},
 							{ path: "/pantry", element: <PantryPage /> },
+							{ path: "/pantry-ai", element: <PantryAiPage /> },
 						],
 					},
 				],
