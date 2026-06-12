@@ -21,11 +21,15 @@ import {
 	Sparkles,
 	LayoutDashboard,
 	LogOut,
+	Sun,
+	Moon,
 } from "lucide-react"
 import { Spinner } from "@/shared/components/ui/spinner"
 import { Suspense } from "react"
 import { TooltipProvider } from "@/shared/components/ui/tooltip"
 import { useAuth } from "@/features/auth/hooks/useAuth"
+import { Button } from "@/shared/components/ui/button"
+import { useTheme } from "@/shared/components/theme-provider"
 
 const NAV_ITEMS = [
 	{ to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -91,6 +95,8 @@ function PageLoader() {
 }
 
 function DashboardLayout() {
+	const { theme, setTheme } = useTheme()
+
 	return (
 		<TooltipProvider>
 			<SidebarProvider>
@@ -101,11 +107,26 @@ function DashboardLayout() {
 				</Sidebar>
 
 				<div className="flex flex-1 flex-col">
-					<header className="sticky top-0 z-10 flex h-14 items-center bg-background px-4">
-						<SidebarTrigger />
-						<Link to="/" className="font-bold">
-							🍳 Let's Cook
-						</Link>
+					<header className="sticky top-0 z-10 flex h-14 items-center justify-between bg-background px-4">
+						<div className="flex items-center gap-2">
+							<SidebarTrigger />
+							<Link to="/" className="font-bold">
+								🍳 Let's Cook
+							</Link>
+						</div>
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={() =>
+								setTheme(theme === "dark" ? "light" : "dark")
+							}
+						>
+							{theme === "dark" ? (
+								<Sun className="size-4" />
+							) : (
+								<Moon className="size-4" />
+							)}
+						</Button>
 					</header>
 
 					<main className="flex flex-1 flex-col p-6">

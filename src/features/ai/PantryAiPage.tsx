@@ -1,3 +1,4 @@
+import ReactMarkdown from "react-markdown"
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/shared/components/ui/button"
 import { Textarea } from "@/shared/components/ui/textarea"
@@ -128,7 +129,7 @@ function PantryAiPage() {
 									: "rounded-bl-sm border border-border bg-card"
 							}`}
 						>
-							{message.content}
+							<ReactMarkdown>{message.content}</ReactMarkdown>
 						</div>
 					</div>
 				))}
